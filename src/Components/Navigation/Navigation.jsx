@@ -8,6 +8,8 @@ const ContainerDiv = styled.div`
     margin: 0 auto;
 `;
 
+ContainerDiv.displayName = "ContainerDiv";
+
 const StyledLink = styled(NavLink)`
     text-decoration: none;
     position: relative;
@@ -32,6 +34,8 @@ const StyledLink = styled(NavLink)`
     }
 `;
 
+StyledLink.displayName = "StyledLink";
+
 const StyledList = styled(List)`
     display: flex;
     flex-direction: row;
@@ -39,12 +43,17 @@ const StyledList = styled(List)`
     margin: 0 auto;
 `;
 
+StyledList.displayName = "StyledList";
+
 const StyledListItem = styled(ListItem)`
     && {
         text-align: center;
     }
 `;
-const Navigation = props => (
+
+StyledListItem.displayName = "StyledListItem";
+
+export const Navigation = props => (
     <ContainerDiv width={props.width}>
         <StyledList>
             {props.items && props.items.length > 0
