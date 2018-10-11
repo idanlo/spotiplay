@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
-import { Grid, CardContent, Typography } from "@material-ui/core";
+import { Grid, CardContent, Typography, Fade } from "@material-ui/core";
 import PlayArrowIcon from "@material-ui/icons/PlayCircleFilled";
 
 const anim = keyframes`
