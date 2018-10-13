@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Switch, Route, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
+import { SpotifyApiContext } from "react-spotify-api";
 import styled from "styled-components";
 import * as actionTypes from "../../store/actions/actionTypes";
 import HomePage from "../../Components/HomePage/HomePage";
@@ -163,68 +164,80 @@ class Layout extends Component {
 
         return this.props.user ? (
             <React.Fragment>
-                <div
-                    style={{
-                        backgroundImage: this.props.backgroundImage,
-                        width: "100%",
-                        height: "100vh",
-                        backgroundSize: "cover",
-                        backgroundRepeat: "no-repeat",
-                        position: "fixed",
-                        top: 0,
-                        left: 0,
-                        zIndex: -1000
-                    }}
-                />
-                <Grid container>
-                    <GridSidedrawer item lg={2}>
-                        {drawer}
-                    </GridSidedrawer>
-                    <GridHomePage
-                        item
-                        lg={12}
+                <SpotifyApiContext.Provider
+                    value={this.props.user.access_token}
+                >
+                    <div
                         style={{
-                            paddingLeft: this.props.width === "lg" ? 255 : null
+                            backgroundImage: this.props.backgroundImage,
+                            width: "100%",
+                            height: "100vh",
+                            backgroundSize: "cover",
+                            backgroundRepeat: "no-repeat",
+                            position: "fixed",
+                            top: 0,
+                            left: 0,
+                            zIndex: -1000
                         }}
-                    >
-                        <Switch>
-                            <Route
-                                path="/browse/:item"
-                                exact
-                                component={HomePage}
-                            />
-                            <Route path="/search" exact component={Search} />
-                            <Route
-                                path="/search/:item/:query"
-                                exact
-                                component={Search}
-                            />
-                            <Route
-                                path="/playlist/:id"
-                                exact
-                                component={PlaylistView}
-                            />
-                            <Route
-                                path="/album/:id"
-                                exact
-                                component={AlbumView}
-                            />
-                            <Route path="/genre/:id" component={GenreView} />
-                            <Route
-                                path="/artist/:id"
-                                exact
-                                component={ArtistView}
-                            />
-                            <Route
-                                path="/library/:item"
-                                exact
-                                component={Library}
-                            />
-                            <Route component={NotFound} />
-                        </Switch>
-                    </GridHomePage>
-                </Grid>
-                <MusicPlayer />
+                    />
+                    <Grid container>
+                        <GridSidedrawer item lg={2}>
+                            {drawer}
+                        </GridSidedrawer>
+                        <GridHomePage
+                            item
+                            lg={12}
+                            style={{
+                                paddingLeft:
+                                    this.props.width === "lg" ? 255 : null
+                            }}
+                        >
+                            <Switch>
+                                <Route
+                                    path="/browse/:item"
+                                    exact
+                                    component={HomePage}
+                                />
+                                <Route
+                                    path="/search"
+                                    exact
+                                    component={Search}
+                                />
+                                <Route
+                                    path="/search/:item/:query"
+                                    exact
+                                    component={Search}
+                                />
+                                <Route
+                                    path="/playlist/:id"
+                                    exact
+                                    component={PlaylistView}
+                                />
+                                <Route
+                                    path="/album/:id"
+                                    exact
+                                    component={AlbumView}
+                                />
+                                <Route
+                                    path="/genre/:id"
+                                    component={GenreView}
+                                />
+                                <Route
+                                    path="/artist/:id"
+                                    exact
+                                    component={ArtistView}
+                                />
+                                <Route
+                                    path="/library/:item"
+                                    exact
+                                    component={Library}
+                                />
+                                <Route component={NotFound} />
+                            </Switch>
+                        </GridHomePage>
+                    </Grid>
+                    <MusicPlayer />
+                </SpotifyApiContext.Provider>
             </React.Fragment>
         ) : (
             <Switch>
