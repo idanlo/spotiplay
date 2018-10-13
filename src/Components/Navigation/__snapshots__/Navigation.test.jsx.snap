@@ -3,7 +3,6 @@
 exports[`Navigation should render two navigation links in a list 1`] = `
 <div
   className="sc-bdVaJa ljTGkq"
-  width={undefined}
 >
   <ul
     className="MuiList-root-1 MuiList-padding-2 sc-htpNat gByEcQ"
@@ -23,7 +22,6 @@ exports[`Navigation should render two navigation links in a list 1`] = `
             className="sc-bwzfXH buioaA"
             href="/test1"
             onClick={[Function]}
-            style={undefined}
           >
             test1
           </a>
@@ -45,7 +43,6 @@ exports[`Navigation should render two navigation links in a list 1`] = `
             className="sc-bwzfXH buioaA"
             href="/test2"
             onClick={[Function]}
-            style={undefined}
           >
             test2
           </a>

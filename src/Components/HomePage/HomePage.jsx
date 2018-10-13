@@ -3,9 +3,9 @@ import { connect } from "react-redux";
 import { Switch, Route } from "react-router-dom";
 import { Grid, Typography } from "@material-ui/core";
 import MediaCard from "../MediaCard/MediaCard";
+import { Browse } from "react-spotify-api";
 import * as actionTypes from "../../store/actions/actionTypes";
 import Navigation from "../Navigation/Navigation";
-import withSpotifyApi from "../../HOC/withSpotifyApi";
 import styled from "styled-components";
 
 const TypographyHeader = styled(Typography).attrs({
@@ -17,49 +17,10 @@ const TypographyHeader = styled(Typography).attrs({
 `;
 
 class HomePage extends Component {
-    state = {
-        featuredPlaylists: null,
-        genres: null,
-        newReleases: null,
-        recommended: null
-    };
-
     componentDidMount() {
-        // const spotifyWebApi = GetSpotifyInstance(this.props.user.access_token);
-        const spotifyWebApi = this.props.api;
-        spotifyWebApi.getFeaturedPlaylists().then(res => {
-            let info = res;
-            console.log(info);
-            this.setState({ featuredPlaylists: info });
-        });
-
-        spotifyWebApi.getCategories({ limit: 12 }).then(res => {
-            let info = res.categories.items;
-            console.log(info);
-            this.setState({ genres: info });
-        });
-        spotifyWebApi.getNewReleases({ limit: 12 }).then(res => {
-            let info = res.albums.items;
-            console.log(info);
-            this.setState({ newReleases: info });
-        });
         this.props.setBackgroundImage(
             "linear-gradient(rgb(58, 91, 95), rgb(6, 9, 10) 85%)"
         );
-    }
-
-    componentDidUpdate() {
-        // this.props.recently_played may not be available on componentDidMount so I'm checking every update.
-        // once this.props.recently_played exists then I do the request (one time)
-        if (
-            this.props.api &&
-            !this.state.recommended &&
-            this.props.recently_played
-        ) {
-            // this.props.api.getRecommendations({ limit: 12 }).then(res => {
-            //     console.log("RECOMMENDED: ", res);
-            // });
-        }
     }
 
     render() {
@@ -122,96 +83,105 @@ class HomePage extends Component {
             );
         }
 
-        let featuredPlaylists = null;
-        if (this.state.featuredPlaylists) {
-            featuredPlaylists = this.state.featuredPlaylists.playlists.items.map(
-                playlist => (
-                    <MediaCard
-                        link={`/playlist/${playlist.id}`}
-                        key={playlist.id}
-                        img={playlist.images[0].url}
-                        content={playlist.name}
-                        playSong={() =>
-                            this.props.playSong(
-                                JSON.stringify({
-                                    context_uri: playlist.uri
-                                })
+        let featuredPlaylists = (
+            <Browse.Featured options={{ limit: 12 }}>
+                {playlists =>
+                    playlists ? (
+                        <div>
+                            <TypographyHeader>
+                                {playlists.message}
+                            </TypographyHeader>
+                            <Grid
+                                container
+                                spacing={16}
+                                style={{ margin: 0, width: "100%" }}
+                            >
+                                {playlists.playlists.items.map(playlist => (
+                                    <MediaCard
+                                        key={playlist.id}
+                                        link={`/playlist/${playlist.id}`}
+                                        img={playlist.images[0].url}
+                                        content={playlist.name}
+                                        playSong={() =>
+                                            this.props.playSong(
+                                                JSON.stringify({
+                                                    context_uri: playlist.uri
+                                                })
+                                            )
+                                        }
+                                    />
+                                ))}
+                            </Grid>
+                        </div>
+                    ) : (
+                        <h1>Loading...</h1>
+                    )
+                }
+            </Browse.Featured>
+        );
+
+        let genres = (
+            <div>
+                <TypographyHeader>Genres & Moods</TypographyHeader>
+                <Grid
+                    container
+                    spacing={16}
+                    style={{ margin: 0, width: "100%" }}
+                >
+                    <Browse.Category options={{ limit: 18 }}>
+                        {categories =>
+                            categories ? (
+                                categories.categories.items.map(genre => (
+                                    <MediaCard
+                                        link={`/genre/${genre.id}`}
+                                        key={genre.id}
+                                        img={genre.icons[0].url}
+                                        content={genre.name}
+                                    />
+                                ))
+                            ) : (
+                                <h1>Loading...</h1>
                             )
                         }
-                    />
-                )
-            );
+                    </Browse.Category>
+                </Grid>
+            </div>
+        );
 
-            featuredPlaylists = (
-                <div>
-                    <TypographyHeader>
-                        {this.state.featuredPlaylists.message}
-                    </TypographyHeader>
-                    <Grid
-                        container
-                        spacing={16}
-                        style={{ margin: 0, width: "100%" }} // inline styles overwrite the material ui styles (no spacing on the left side)
-                    >
-                        {featuredPlaylists}
-                    </Grid>
-                </div>
-            );
-        }
-
-        let genres = null;
-        if (this.state.genres) {
-            genres = this.state.genres.map(genre => (
-                <MediaCard
-                    link={"/genre/" + genre.id}
-                    key={genre.id}
-                    img={genre.icons[0].url}
-                    content={genre.name}
-                />
-            ));
-
-            genres = (
-                <div>
-                    <TypographyHeader>Genres & Moods</TypographyHeader>
-                    <Grid
-                        container
-                        spacing={16}
-                        style={{ margin: 0, width: "100%" }} // inline styles overwrite the material ui styles (no spacing on the left side)
-                    >
-                        {genres}
-                    </Grid>
-                </div>
-            );
-        }
-
-        let newReleases = null;
-        if (this.state.newReleases) {
-            newReleases = this.state.newReleases.map(album => (
-                <MediaCard
-                    key={album.id}
-                    link={"/album/" + album.id}
-                    img={album.images[0].url}
-                    content={album.name}
-                    playSong={() =>
-                        this.props.playSong(
-                            JSON.stringify({ context_uri: album.uri })
-                        )
-                    }
-                />
-            ));
-
-            newReleases = (
-                <div>
-                    <TypographyHeader>New Releases</TypographyHeader>
-                    <Grid
-                        container
-                        spacing={16}
-                        style={{ margin: 0, width: "100%" }}
-                    >
-                        {newReleases}
-                    </Grid>
-                </div>
-            );
-        }
+        let newReleases = (
+            <div>
+                <TypographyHeader>New Releases</TypographyHeader>
+                <Grid
+                    container
+                    spacing={16}
+                    style={{ margin: 0, width: "100%" }}
+                >
+                    <Browse.New options={{ limit: 18 }}>
+                        {albums =>
+                            albums ? (
+                                albums.albums.items.map(album => (
+                                    <MediaCard
+                                        link={`/album/${album.id}`}
+                                        key={album.id}
+                                        img={album.images[0].url}
+                                        content={album.name}
+                                        playSong={() =>
+                                            this.props.playSong(
+                                                JSON.stringify({
+                                                    context_uri: album.uri
+                                                })
+                                            )
+                                        }
+                                    />
+                                ))
+                            ) : (
+                                <h1>Loading...</h1>
+                            )
+                        }
+                    </Browse.New>
+                </Grid>
+            </div>
+        );
 
         return (
             <Grid container>
@@ -265,4 +235,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(withSpotifyApi(HomePage));
+)(HomePage);
