@@ -113,9 +113,7 @@ class HomePage extends Component {
                                 ))}
                             </Grid>
                         </div>
-                    ) : (
-                        <h1>Loading...</h1>
-                    )
+                    ) : null
                 }
             </Browse.Featured>
         );
@@ -130,18 +128,16 @@ class HomePage extends Component {
                 >
                     <Browse.Category options={{ limit: 18 }}>
                         {categories =>
-                            categories ? (
-                                categories.categories.items.map(genre => (
-                                    <MediaCard
-                                        link={`/genre/${genre.id}`}
-                                        key={genre.id}
-                                        img={genre.icons[0].url}
-                                        content={genre.name}
-                                    />
-                                ))
-                            ) : (
-                                <h1>Loading...</h1>
-                            )
+                            categories
+                                ? categories.categories.items.map(genre => (
+                                      <MediaCard
+                                          link={`/genre/${genre.id}`}
+                                          key={genre.id}
+                                          img={genre.icons[0].url}
+                                          content={genre.name}
+                                      />
+                                  ))
+                                : null
                         }
                     </Browse.Category>
                 </Grid>
@@ -158,25 +154,23 @@ class HomePage extends Component {
                 >
                     <Browse.New options={{ limit: 18 }}>
                         {albums =>
-                            albums ? (
-                                albums.albums.items.map(album => (
-                                    <MediaCard
-                                        link={`/album/${album.id}`}
-                                        key={album.id}
-                                        img={album.images[0].url}
-                                        content={album.name}
-                                        playSong={() =>
-                                            this.props.playSong(
-                                                JSON.stringify({
-                                                    context_uri: album.uri
-                                                })
-                                            )
-                                        }
-                                    />
-                                ))
-                            ) : (
-                                <h1>Loading...</h1>
-                            )
+                            albums
+                                ? albums.albums.items.map(album => (
+                                      <MediaCard
+                                          link={`/album/${album.id}`}
+                                          key={album.id}
+                                          img={album.images[0].url}
+                                          content={album.name}
+                                          playSong={() =>
+                                              this.props.playSong(
+                                                  JSON.stringify({
+                                                      context_uri: album.uri
+                                                  })
+                                              )
+                                          }
+                                      />
+                                  ))
+                                : null
                         }
                     </Browse.New>
                 </Grid>

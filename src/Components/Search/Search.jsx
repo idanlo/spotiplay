@@ -25,7 +25,7 @@ class Search extends Component {
             this.fetchData(query);
         }
         this.props.setBackgroundImage(
-            "linear-gradient(rgb(18, 18, 18), rgb(8, 8, 8) 85%)"
+            "linear-gradient(rgb(58, 91, 95), rgb(6, 9, 10) 85%)"
         );
     }
 

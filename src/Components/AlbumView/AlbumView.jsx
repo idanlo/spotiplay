@@ -225,9 +225,7 @@ class AlbumView extends Component {
                                 </List>
                             </Grid>
                         </Grid>
-                    ) : (
-                        <h1>Loading...</h1>
-                    )
+                    ) : null
                 }
             </Album>
         );

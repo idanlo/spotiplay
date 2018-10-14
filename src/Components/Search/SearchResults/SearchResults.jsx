@@ -42,7 +42,7 @@ const SearchResults = props => {
         }
     ];
 
-    let TopResults = <h1>Loading...</h1>;
+    let TopResults = null;
 
     if (
         props.results.artists &&
@@ -241,7 +241,7 @@ const SearchResults = props => {
         );
     }
 
-    let Artists = <h1>Loading...</h1>;
+    let Artists = null;
 
     if (props.results.artists && props.results.artists.length > 0) {
         Artists = (
@@ -266,7 +266,7 @@ const SearchResults = props => {
         );
     }
 
-    let Tracks = <h1>Loading...</h1>;
+    let Tracks = null;
 
     if (props.results.tracks && props.results.tracks.length > 0) {
         Tracks = (
@@ -339,7 +339,7 @@ const SearchResults = props => {
         );
     }
 
-    let Albums = <h1>Loading...</h1>;
+    let Albums = null;
 
     if (props.results.albums && props.results.albums.length > 0) {
         Albums = (
@@ -365,7 +365,7 @@ const SearchResults = props => {
         );
     }
 
-    let Playlists = <h1>Loading...</h1>;
+    let Playlists = null;
 
     if (props.results.playlists && props.results.playlists.length > 0) {
         Playlists = (

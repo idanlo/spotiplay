@@ -64,9 +64,7 @@ class ArtistView extends Component {
                                 </Button>
                             </div>
                         </Grid>
-                    ) : (
-                        <h1>Loading...</h1>
-                    )
+                    ) : null
                 }
             </Artist>
         );
@@ -100,9 +98,7 @@ class ArtistView extends Component {
                                 </ListItem>
                             ))}
                         </List>
-                    ) : (
-                        <h1>Loading...</h1>
-                    )
+                    ) : null
                 }
             </Artist.Tracks>
         );

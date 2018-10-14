@@ -13,12 +13,6 @@ const SearchDiv = styled.div`
     margin: 0 auto;
 `;
 
-const SearchTitle = styled.h4`
-    font-weight: 400;
-    color: #fff;
-    margin-bottom: 0.5em;
-`;
-
 const SearchInputField = styled.input`
     width: 100%;
     font-size: 48px;
@@ -32,14 +26,11 @@ const SearchInputField = styled.input`
 const SearchInput = props => (
     <SearchForm onSubmit={props.formSubmitted}>
         <SearchDiv>
-            <SearchTitle>
-                Search for an artist, Song, Album, or Playlist
-            </SearchTitle>
             <SearchInputField
                 spellCheck="false"
                 type="text"
                 value={props.value}
-                placeholder="Search..."
+                placeholder="Start typing..."
                 onChange={props.queryChanged}
             />
         </SearchDiv>

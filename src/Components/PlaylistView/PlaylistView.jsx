@@ -92,7 +92,7 @@ class PlaylistView extends Component {
     render() {
         const { playlist } = this.state;
 
-        let mainContent = <h1>Loading...</h1>;
+        let mainContent = null;
 
         if (playlist) {
             mainContent = (
