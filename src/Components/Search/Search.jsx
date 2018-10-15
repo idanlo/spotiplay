@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import * as actionTypes from "../../store/actions/actionTypes";
-import withSpotifyApi from "../../HOC/withSpotifyApi";
 import SearchInput from "./SearchInput/SearchInput";
 import SearchResults from "./SearchResults/SearchResults";
 import { Grid } from "@material-ui/core";
@@ -10,19 +9,12 @@ import { Grid } from "@material-ui/core";
 class Search extends Component {
     state = {
         query: "" // used for the search input, updated every keystroke
-        // results: {
-        //     tracks: null,
-        //     playlists: null,
-        //     artists: null,
-        //     albums: null
-        // }
     };
 
     componentDidMount() {
         if (this.props.match.params.query) {
             const { query } = this.props.match.params;
             this.setState({ query });
-            // this.fetchData(query);
         }
         this.props.setBackgroundImage(
             "linear-gradient(rgb(58, 91, 95), rgb(6, 9, 10) 85%)"
@@ -68,5 +60,5 @@ export default withRouter(
     connect(
         null,
         mapDispatchToProps
-    )(withSpotifyApi(Search))
+    )(Search)
 );
