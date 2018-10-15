@@ -12,6 +12,7 @@ import {
 import PauseIcon from "@material-ui/icons/Pause";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import * as actionTypes from "../../../store/actions/actionTypes";
+import { Search } from "react-spotify-api";
 import Navigation from "../../Navigation/Navigation";
 import MediaCard from "../../MediaCard/MediaCard";
 import { TrackDetailsLink } from "../../UI/TrackDetailsLink";
@@ -42,390 +43,484 @@ const SearchResults = props => {
         }
     ];
 
-    let TopResults = null;
+    // let TopResults = null;
 
-    if (
-        props.results.artists &&
-        props.results.albums &&
-        props.results.playlists &&
-        props.results.tracks
-    ) {
-        TopResults = (
-            <Grid container>
-                {props.results.artists.length > 0 &&
-                props.results.tracks.length > 0 ? (
+    // if (
+    //     props.results.artists &&
+    //     props.results.albums &&
+    //     props.results.playlists &&
+    //     props.results.tracks
+    // ) {
+    let TopResults = (
+        <Search query={props.match.params.query} artist track album>
+            {data => {
+                return data && data.artists && data.tracks && data.albums ? (
+                    <Grid container>
+                        {data.artists.items.length > 0 &&
+                        data.tracks.items.length > 0 ? (
+                            <Grid
+                                container
+                                spacing={16}
+                                style={{ margin: 0, width: "100%" }}
+                            >
+                                <MediaCard
+                                    rounded
+                                    link={"/artist/" + data.artists.items[0].id}
+                                    img={
+                                        data.artists.items[0].images.length > 0
+                                            ? data.artists.items[0].images[0]
+                                                  .url
+                                            : null
+                                    }
+                                    content={data.artists.items[0].name}
+                                    playSong={() =>
+                                        props.playSong(
+                                            JSON.stringify({
+                                                context_uri:
+                                                    data.artists.items[0].uri
+                                            })
+                                        )
+                                    }
+                                />
+                                <Grid item xs={12} sm={6} md={10}>
+                                    <List>
+                                        {data.tracks.items
+                                            .slice(0, 6)
+                                            .map(track => {
+                                                const ArtistAlbumLink = (
+                                                    <React.Fragment>
+                                                        {track.artists.map(
+                                                            (artist, index) => (
+                                                                <React.Fragment
+                                                                    key={
+                                                                        artist.id
+                                                                    }
+                                                                >
+                                                                    <TrackDetailsLink
+                                                                        to={
+                                                                            "/artist/" +
+                                                                            artist.id
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            artist.name
+                                                                        }
+                                                                    </TrackDetailsLink>
+                                                                    {index !==
+                                                                    track
+                                                                        .artists
+                                                                        .length -
+                                                                        1
+                                                                        ? ", "
+                                                                        : null}
+                                                                </React.Fragment>
+                                                            )
+                                                        )}
+                                                        <span> • </span>
+                                                        <TrackDetailsLink
+                                                            to={
+                                                                "/album/" +
+                                                                track.album.id
+                                                            }
+                                                        >
+                                                            {track.album.name}
+                                                        </TrackDetailsLink>
+                                                    </React.Fragment>
+                                                );
+                                                return (
+                                                    <ListItem
+                                                        key={track.id}
+                                                        style={
+                                                            props.currentlyPlaying ===
+                                                                track.name &&
+                                                            props.isPlaying
+                                                                ? {
+                                                                      background:
+                                                                          "#1db954"
+                                                                  }
+                                                                : null
+                                                        }
+                                                    >
+                                                        <ListItemIcon
+                                                            style={{
+                                                                cursor:
+                                                                    "pointer"
+                                                            }}
+                                                        >
+                                                            {props.currentlyPlaying ===
+                                                                track.name &&
+                                                            props.isPlaying ? (
+                                                                <PauseIcon
+                                                                    onClick={
+                                                                        props.pauseSong
+                                                                    }
+                                                                />
+                                                            ) : (
+                                                                <PlayArrowIcon
+                                                                    onClick={() =>
+                                                                        props.playSong(
+                                                                            JSON.stringify(
+                                                                                {
+                                                                                    context_uri:
+                                                                                        track
+                                                                                            .album
+                                                                                            .uri,
+                                                                                    offset: {
+                                                                                        uri:
+                                                                                            track.uri
+                                                                                    }
+                                                                                }
+                                                                            )
+                                                                        )
+                                                                    }
+                                                                />
+                                                            )}
+                                                        </ListItemIcon>
+                                                        <ListItemText
+                                                            primary={track.name}
+                                                            secondary={
+                                                                ArtistAlbumLink
+                                                            }
+                                                        />
+                                                        <ListItemText
+                                                            style={{
+                                                                textAlign:
+                                                                    "right"
+                                                            }}
+                                                            primary={milisToMinutesAndSeconds(
+                                                                track.duration_ms
+                                                            )}
+                                                        />
+                                                    </ListItem>
+                                                );
+                                            })}
+                                    </List>
+                                </Grid>
+                            </Grid>
+                        ) : null}
+                        {data.artists.items.length > 0 ? (
+                            <div style={{ width: "100%" }}>
+                                <Typography
+                                    style={{ padding: 10 }}
+                                    color="secondary"
+                                    variant="title"
+                                    align="center"
+                                >
+                                    Artists
+                                </Typography>
+                                <Grid
+                                    container
+                                    spacing={16}
+                                    style={{ margin: 0, width: "100%" }}
+                                >
+                                    {data.artists.items
+                                        .slice(0, 6)
+                                        .map(artist => (
+                                            <MediaCard
+                                                rounded
+                                                key={artist.id}
+                                                link={"/artist/" + artist.id}
+                                                img={
+                                                    artist.images.length > 0
+                                                        ? artist.images[0].url
+                                                        : null
+                                                }
+                                                content={artist.name}
+                                                playSong={() =>
+                                                    props.playSong(
+                                                        JSON.stringify({
+                                                            context_uri:
+                                                                artist.uri
+                                                        })
+                                                    )
+                                                }
+                                            />
+                                        ))}
+                                </Grid>
+                            </div>
+                        ) : null}
+                        {data.albums.items.length > 0 ? (
+                            <div style={{ width: "100%" }}>
+                                <Typography
+                                    style={{ padding: 10 }}
+                                    color="secondary"
+                                    variant="title"
+                                    align="center"
+                                >
+                                    Albums
+                                </Typography>
+                                <Grid
+                                    container
+                                    spacing={16}
+                                    style={{ margin: 0, width: "100%" }}
+                                >
+                                    {data.albums.items
+                                        .slice(0, 6)
+                                        .map(album => (
+                                            <MediaCard
+                                                key={album.id}
+                                                link={"/album/" + album.id}
+                                                img={
+                                                    album.images.length > 0
+                                                        ? album.images[0].url
+                                                        : null
+                                                }
+                                                content={`${album.artists
+                                                    .map(a => a.name)
+                                                    .join(", ")} - ${
+                                                    album.name
+                                                }`}
+                                                playSong={() =>
+                                                    props.playSong(
+                                                        JSON.stringify({
+                                                            context_uri:
+                                                                album.uri
+                                                        })
+                                                    )
+                                                }
+                                            />
+                                        ))}
+                                </Grid>
+                            </div>
+                        ) : null}
+                    </Grid>
+                ) : null;
+            }}
+        </Search>
+    );
+    // }
+
+    // let Artists = null;
+
+    // if (props.results.artists && props.results.artists.length > 0) {
+    let Artists = (
+        <Search query={props.match.params.query} artist>
+            {data =>
+                data && data.artists ? (
                     <Grid
                         container
                         spacing={16}
                         style={{ margin: 0, width: "100%" }}
                     >
-                        <MediaCard
-                            rounded
-                            link={"/artist/" + props.results.artists[0].id}
-                            img={
-                                props.results.artists[0].images.length > 0
-                                    ? props.results.artists[0].images[0].url
-                                    : null
-                            }
-                            content={props.results.artists[0].name}
-                            playSong={() =>
-                                props.playSong(
-                                    JSON.stringify({
-                                        context_uri:
-                                            props.results.artists[0].uri
-                                    })
-                                )
-                            }
-                        />
-                        <Grid item xs={12} sm={6} md={10}>
-                            <List>
-                                {props.results.tracks.slice(0, 6).map(track => {
-                                    const ArtistAlbumLink = (
-                                        <React.Fragment>
-                                            {track.artists.map(
-                                                (artist, index) => (
-                                                    <React.Fragment
-                                                        key={artist.id}
-                                                    >
-                                                        <TrackDetailsLink
-                                                            to={
-                                                                "/artist/" +
-                                                                artist.id
-                                                            }
-                                                        >
-                                                            {artist.name}
-                                                        </TrackDetailsLink>
-                                                        {index !==
-                                                        track.artists.length - 1
-                                                            ? ", "
-                                                            : null}
-                                                    </React.Fragment>
-                                                )
-                                            )}
-                                            <span> • </span>
-                                            <TrackDetailsLink
-                                                to={"/album/" + track.album.id}
-                                            >
-                                                {track.album.name}
-                                            </TrackDetailsLink>
-                                        </React.Fragment>
-                                    );
-                                    return (
-                                        <ListItem
-                                            key={track.id}
-                                            style={
-                                                props.currentlyPlaying ===
-                                                    track.name &&
-                                                props.isPlaying
-                                                    ? { background: "#1db954" }
-                                                    : null
-                                            }
-                                        >
-                                            <ListItemIcon
-                                                style={{ cursor: "pointer" }}
-                                            >
-                                                {props.currentlyPlaying ===
-                                                    track.name &&
-                                                props.isPlaying ? (
-                                                    <PauseIcon
-                                                        onClick={
-                                                            props.pauseSong
-                                                        }
-                                                    />
-                                                ) : (
-                                                    <PlayArrowIcon
-                                                        onClick={() =>
-                                                            props.playSong(
-                                                                JSON.stringify({
-                                                                    context_uri:
-                                                                        track
-                                                                            .album
-                                                                            .uri,
-                                                                    offset: {
-                                                                        uri:
-                                                                            track.uri
-                                                                    }
-                                                                })
-                                                            )
-                                                        }
-                                                    />
-                                                )}
-                                            </ListItemIcon>
-                                            <ListItemText
-                                                primary={track.name}
-                                                secondary={ArtistAlbumLink}
-                                            />
-                                            <ListItemText
-                                                style={{ textAlign: "right" }}
-                                                primary={milisToMinutesAndSeconds(
-                                                    track.duration_ms
-                                                )}
-                                            />
-                                        </ListItem>
-                                    );
-                                })}
-                            </List>
-                        </Grid>
+                        {data.artists.items.map(artist => (
+                            <MediaCard
+                                rounded
+                                key={artist.id}
+                                link={"/album/" + artist.id}
+                                img={
+                                    artist.images.length > 0
+                                        ? artist.images[0].url
+                                        : null
+                                }
+                                content={artist.name}
+                                playSong={() =>
+                                    props.playSong(
+                                        JSON.stringify({
+                                            context_uri: artist.uri
+                                        })
+                                    )
+                                }
+                            />
+                        ))}
                     </Grid>
-                ) : null}
-                {props.results.artists.length > 0 ? (
-                    <div style={{ width: "100%" }}>
-                        <Typography
-                            style={{ padding: 10 }}
-                            color="secondary"
-                            variant="title"
-                            align="center"
-                        >
-                            Artists
-                        </Typography>
-                        <Grid
-                            container
-                            spacing={16}
-                            style={{ margin: 0, width: "100%" }}
-                        >
-                            {props.results.artists.slice(0, 6).map(artist => (
-                                <MediaCard
-                                    rounded
-                                    key={artist.id}
-                                    link={"/artist/" + artist.id}
-                                    img={artist.images[0].url}
-                                    content={artist.name}
-                                    playSong={() =>
-                                        props.playSong(
-                                            JSON.stringify({
-                                                context_uri: artist.uri
-                                            })
-                                        )
-                                    }
-                                />
-                            ))}
-                        </Grid>
-                    </div>
-                ) : null}
-                {props.results.albums.length > 0 ? (
-                    <div style={{ width: "100%" }}>
-                        <Typography
-                            style={{ padding: 10 }}
-                            color="secondary"
-                            variant="title"
-                            align="center"
-                        >
-                            Albums
-                        </Typography>
-                        <Grid
-                            container
-                            spacing={16}
-                            style={{ margin: 0, width: "100%" }}
-                        >
-                            {props.results.albums.slice(0, 6).map(album => (
-                                <MediaCard
-                                    key={album.id}
-                                    link={"/album/" + album.id}
-                                    img={album.images[0].url}
-                                    content={`${album.artists
-                                        .map(a => a.name)
-                                        .join(", ")} - ${album.name}`}
-                                    playSong={() =>
-                                        props.playSong(
-                                            JSON.stringify({
-                                                context_uri: album.uri
-                                            })
-                                        )
-                                    }
-                                />
-                            ))}
-                        </Grid>
-                    </div>
-                ) : null}
-            </Grid>
-        );
-    }
+                ) : null
+            }
+        </Search>
+    );
+    // }
 
-    let Artists = null;
-
-    if (props.results.artists && props.results.artists.length > 0) {
-        Artists = (
-            <Grid container spacing={16} style={{ margin: 0, width: "100%" }}>
-                {props.results.artists.map(artist => (
-                    <MediaCard
-                        rounded
-                        key={artist.id}
-                        link={"/album/" + artist.id}
-                        img={artist.images[0].url}
-                        content={artist.name}
-                        playSong={() =>
-                            props.playSong(
-                                JSON.stringify({
-                                    context_uri: artist.uri
-                                })
-                            )
-                        }
-                    />
-                ))}
-            </Grid>
-        );
-    }
-
-    let Tracks = null;
-
-    if (props.results.tracks && props.results.tracks.length > 0) {
-        Tracks = (
-            <List style={{ width: "100%" }}>
-                {props.results.tracks.map(track => {
-                    const ArtistAlbumLink = (
-                        <div>
-                            {track.artists.map((artist, index) => (
-                                <React.Fragment key={artist.id}>
+    // let Tracks = null;
+    // if (props.results.tracks && props.results.tracks.length > 0) {
+    let Tracks = (
+        <Search query={props.match.params.query} track>
+            {data =>
+                data && data.tracks ? (
+                    <List style={{ width: "100%" }}>
+                        {data.tracks.items.map(track => {
+                            const ArtistAlbumLink = (
+                                <React.Fragment>
+                                    {track.artists.map((artist, index) => (
+                                        <React.Fragment key={artist.id}>
+                                            <TrackDetailsLink
+                                                to={"/artist/" + artist.id}
+                                            >
+                                                {artist.name}
+                                            </TrackDetailsLink>
+                                            {index !== track.artists.length - 1
+                                                ? ", "
+                                                : null}
+                                        </React.Fragment>
+                                    ))}
+                                    <span> • </span>
                                     <TrackDetailsLink
-                                        to={"/artist/" + artist.id}
+                                        to={"/album/" + track.album.id}
                                     >
-                                        {artist.name}
+                                        {track.album.name}
                                     </TrackDetailsLink>
-                                    {index !== track.artists.length - 1
-                                        ? ", "
-                                        : null}
                                 </React.Fragment>
-                            ))}
-                            <span> • </span>
-                            <TrackDetailsLink to={"/album/" + track.album.id}>
-                                {track.album.name}
-                            </TrackDetailsLink>
-                        </div>
-                    );
-                    return (
-                        <ListItem
-                            key={track.id}
-                            style={
-                                props.currentlyPlaying === track.name &&
-                                props.isPlaying
-                                    ? { background: "#1db954" }
-                                    : null
-                            }
-                        >
-                            <ListItemIcon style={{ cursor: "pointer" }}>
-                                {props.currentlyPlaying === track.name &&
-                                props.isPlaying ? (
-                                    <PauseIcon onClick={props.pauseSong} />
-                                ) : (
-                                    <PlayArrowIcon
-                                        onClick={() =>
-                                            props.playSong(
-                                                JSON.stringify({
-                                                    context_uri:
-                                                        track.album.uri,
-                                                    offset: {
-                                                        uri: track.uri
-                                                    }
-                                                })
-                                            )
-                                        }
+                            );
+                            return (
+                                <ListItem
+                                    key={track.id}
+                                    style={
+                                        props.currentlyPlaying === track.name &&
+                                        props.isPlaying
+                                            ? { background: "#1db954" }
+                                            : null
+                                    }
+                                >
+                                    <ListItemIcon style={{ cursor: "pointer" }}>
+                                        {props.currentlyPlaying ===
+                                            track.name && props.isPlaying ? (
+                                            <PauseIcon
+                                                onClick={props.pauseSong}
+                                            />
+                                        ) : (
+                                            <PlayArrowIcon
+                                                onClick={() =>
+                                                    props.playSong(
+                                                        JSON.stringify({
+                                                            context_uri:
+                                                                track.album.uri,
+                                                            offset: {
+                                                                uri: track.uri
+                                                            }
+                                                        })
+                                                    )
+                                                }
+                                            />
+                                        )}
+                                    </ListItemIcon>
+                                    <ListItemText
+                                        primary={track.name}
+                                        secondary={ArtistAlbumLink}
                                     />
-                                )}
-                            </ListItemIcon>
-                            <ListItemText
-                                primary={track.name}
-                                secondary={ArtistAlbumLink}
+                                    <ListItemText
+                                        style={{ textAlign: "right" }}
+                                        primary={milisToMinutesAndSeconds(
+                                            track.duration_ms
+                                        )}
+                                    />
+                                </ListItem>
+                            );
+                        })}
+                    </List>
+                ) : null
+            }
+        </Search>
+    );
+    // }
+
+    // let Albums = null;
+
+    // if (props.results.albums && props.results.albums.length > 0) {
+    let Albums = (
+        <Search query={props.match.params.query} album>
+            {data => {
+                return data && data.albums ? (
+                    <Grid
+                        container
+                        spacing={16}
+                        style={{ margin: 0, width: "100%" }}
+                    >
+                        {data.albums.items.map(album => (
+                            <MediaCard
+                                key={album.id}
+                                link={"/album/" + album.id}
+                                img={
+                                    album.images.length > 0
+                                        ? album.images[0].url
+                                        : null
+                                }
+                                content={`${album.artists
+                                    .map(a => a.name)
+                                    .join(", ")} - ${album.name}`}
+                                playSong={() =>
+                                    props.playSong(
+                                        JSON.stringify({
+                                            context_uri: album.uri
+                                        })
+                                    )
+                                }
                             />
-                            <ListItemText
-                                style={{ textAlign: "right" }}
-                                primary={milisToMinutesAndSeconds(
-                                    track.duration_ms
-                                )}
+                        ))}
+                    </Grid>
+                ) : null;
+            }}
+        </Search>
+    );
+    // }
+
+    // let Playlists = null;
+
+    // if (props.results.playlists && props.results.playlists.length > 0) {
+    let Playlists = (
+        <Search query={props.match.params.query} playlist>
+            {data =>
+                data && data.playlists ? (
+                    <Grid
+                        container
+                        spacing={16}
+                        style={{ margin: 0, width: "100%" }}
+                    >
+                        {data.playlists.items.map(playlist => (
+                            <MediaCard
+                                key={playlist.id}
+                                link={"/playlist/" + playlist.id}
+                                img={
+                                    playlist.images.length > 0
+                                        ? playlist.images[0].url
+                                        : null
+                                }
+                                content={playlist.name}
+                                playSong={() =>
+                                    props.playSong(
+                                        JSON.stringify({
+                                            context_uri: playlist.uri
+                                        })
+                                    )
+                                }
                             />
-                        </ListItem>
-                    );
-                })}
-            </List>
-        );
-    }
-
-    let Albums = null;
-
-    if (props.results.albums && props.results.albums.length > 0) {
-        Albums = (
-            <Grid container spacing={16} style={{ margin: 0, width: "100%" }}>
-                {props.results.albums.map(album => (
-                    <MediaCard
-                        key={album.id}
-                        link={"/album/" + album.id}
-                        img={album.images[0].url}
-                        content={`${album.artists
-                            .map(a => a.name)
-                            .join(", ")} - ${album.name}`}
-                        playSong={() =>
-                            props.playSong(
-                                JSON.stringify({
-                                    context_uri: album.uri
-                                })
-                            )
-                        }
-                    />
-                ))}
-            </Grid>
-        );
-    }
-
-    let Playlists = null;
-
-    if (props.results.playlists && props.results.playlists.length > 0) {
-        Playlists = (
-            <Grid container spacing={16} style={{ margin: 0, width: "100%" }}>
-                {props.results.playlists.map(playlist => (
-                    <MediaCard
-                        key={playlist.id}
-                        link={"/playlist/" + playlist.id}
-                        img={playlist.images[0].url}
-                        content={playlist.name}
-                        playSong={() =>
-                            props.playSong(
-                                JSON.stringify({
-                                    context_uri: playlist.uri
-                                })
-                            )
-                        }
-                    />
-                ))}
-            </Grid>
-        );
-    }
+                        ))}
+                    </Grid>
+                ) : null
+            }
+        </Search>
+    );
+    // }
 
     return (
         <Grid container style={{ width: "100%", margin: 0 }}>
-            {props.results.artists &&
-            props.results.albums &&
-            props.results.playlists &&
-            props.results.tracks ? (
-                <React.Fragment>
-                    <Navigation items={NavigationItems} width="60%" />
-                    <Switch>
-                        <Route
-                            path="/search/results/:query"
-                            exact
-                            render={() => TopResults}
-                        />
-                        <Route
-                            path="/search/artists/:query"
-                            exact
-                            render={() => Artists}
-                        />
-                        <Route
-                            path="/search/tracks/:query"
-                            exact
-                            render={() => Tracks}
-                        />
-                        <Route
-                            path="/search/albums/:query"
-                            exact
-                            render={() => Albums}
-                        />
-                        <Route
-                            path="/search/playlists/:query"
-                            exact
-                            render={() => Playlists}
-                        />
-                    </Switch>
-                </React.Fragment>
-            ) : null}
+            <React.Fragment>
+                <Navigation items={NavigationItems} width="60%" />
+                <Switch>
+                    <Route
+                        path="/search/results/:query"
+                        exact
+                        render={() => TopResults}
+                    />
+                    <Route
+                        path="/search/artists/:query"
+                        exact
+                        render={() => Artists}
+                    />
+                    <Route
+                        path="/search/tracks/:query"
+                        exact
+                        render={() => Tracks}
+                    />
+                    <Route
+                        path="/search/albums/:query"
+                        exact
+                        render={() => Albums}
+                    />
+                    <Route
+                        path="/search/playlists/:query"
+                        exact
+                        render={() => Playlists}
+                    />
+                </Switch>
+            </React.Fragment>
         </Grid>
     );
 };

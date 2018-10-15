@@ -9,20 +9,20 @@ import { Grid } from "@material-ui/core";
 
 class Search extends Component {
     state = {
-        query: "", // used for the search input, updated every keystroke
-        results: {
-            tracks: null,
-            playlists: null,
-            artists: null,
-            albums: null
-        }
+        query: "" // used for the search input, updated every keystroke
+        // results: {
+        //     tracks: null,
+        //     playlists: null,
+        //     artists: null,
+        //     albums: null
+        // }
     };
 
     componentDidMount() {
         if (this.props.match.params.query) {
             const { query } = this.props.match.params;
             this.setState({ query });
-            this.fetchData(query);
+            // this.fetchData(query);
         }
         this.props.setBackgroundImage(
             "linear-gradient(rgb(58, 91, 95), rgb(6, 9, 10) 85%)"
@@ -38,37 +38,6 @@ class Search extends Component {
         e.preventDefault();
         const { query } = this.state;
         this.props.history.push("/search/results/" + query);
-        this.fetchData(query);
-    };
-
-    fetchData = query => {
-        if (this.props.api) {
-            const { api } = this.props;
-            const options = {
-                limit: 12,
-                market: "from_token"
-            };
-            api.searchTracks(query, options).then(res => {
-                let results = { ...this.state.results };
-                results.tracks = res.tracks.items;
-                this.setState({ results });
-            });
-            api.searchArtists(query, options).then(res => {
-                let results = { ...this.state.results };
-                results.artists = res.artists.items;
-                this.setState({ results });
-            });
-            api.searchPlaylists(query, options).then(res => {
-                let results = { ...this.state.results };
-                results.playlists = res.playlists.items;
-                this.setState({ results });
-            });
-            api.searchAlbums(query, options).then(res => {
-                let results = { ...this.state.results };
-                results.albums = res.albums.items;
-                this.setState({ results });
-            });
-        }
     };
 
     render() {
@@ -79,7 +48,7 @@ class Search extends Component {
                     formSubmitted={this.formSubmittedHandler}
                     value={this.state.query}
                 />
-                <SearchResults results={this.state.results} />
+                {this.props.match.params.query ? <SearchResults /> : null}
             </Grid>
         );
     }
