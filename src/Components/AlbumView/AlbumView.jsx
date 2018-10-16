@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import * as actionTypes from "../../store/actions/actionTypes";
 import { connect } from "react-redux";
+import axios from "axios";
 import { Album } from "react-spotify-api";
 import Vibrant from "node-vibrant";
 import {
@@ -19,6 +20,10 @@ import { TrackDetailsLink } from "../UI/TrackDetailsLink";
 import { milisToMinutesAndSeconds } from "../../utils/index";
 
 class AlbumView extends Component {
+    state = {
+        isAlbumSaved: false
+    };
+
     changeBackgroundImageHandler = img => {
         Vibrant.from(img)
             .getPalette()
@@ -30,27 +35,42 @@ class AlbumView extends Component {
             });
     };
 
-    // checkIsAlbumSaved = () => {
-    //     // assuming this.state.album does not exist because it hasn't loaded yet so i am using the id from the url.
-    //     if (this.props.api) {
-    //         this.props.api
-    //             .containsMySavedAlbums([this.props.match.params.id])
-    //             .then(res => {
-    //                 this.setState({ isAlbumSaved: res[0] });
-    //             });
-    //     }
-    // };
+    componentDidMount() {
+        this.checkIsAlbumSaved();
+    }
 
-    // saveAlbum = () => {
-    //     // assuming this.state.album does exist because the save button should not appear unless there is an album.
-    //     if (this.props.api) {
-    //         this.props.api
-    //             .addToMySavedAlbums([this.state.album.id])
-    //             .then(res => {
-    //                 this.setState({ isAlbumSaved: true });
-    //             });
-    //     }
-    // };
+    checkIsAlbumSaved = () => {
+        if (this.props.user.access_token && this.props.match.params.id) {
+            axios
+                .get("https://api.spotify.com/v1/me/albums/contains", {
+                    params: {
+                        ids: this.props.match.params.id
+                    },
+                    headers: {
+                        Authorization: `Bearer ${this.props.user.access_token}`
+                    }
+                })
+                .then(res => {
+                    this.setState({ isAlbumSaved: res.data[0] });
+                });
+        }
+    };
+
+    saveAlbum = () => {
+        if (this.props.user.access_token && this.props.match.params.id) {
+            axios({
+                method: "PUT",
+                url: `https://api.spotify.com/v1/me/albums?ids=${
+                    this.props.match.params.id
+                }`,
+                headers: {
+                    Authorization: `Bearer ${this.props.user.access_token}`
+                }
+            }).then(() => {
+                this.setState({ isAlbumSaved: true });
+            });
+        }
+    };
 
     playSongHandler = (track, album) => {
         if (track) {
@@ -116,8 +136,8 @@ class AlbumView extends Component {
                                     </Typography>
                                     <Button
                                         color="primary"
-                                        // disabled={this.state.isAlbumSaved}
-                                        // onClick={this.saveAlbum}
+                                        disabled={this.state.isAlbumSaved}
+                                        onClick={this.saveAlbum}
                                     >
                                         Save
                                     </Button>
@@ -236,7 +256,8 @@ class AlbumView extends Component {
 const mapStateToProps = state => {
     return {
         currentlyPlaying: state.currently_playing,
-        isPlaying: state.isPlaying
+        isPlaying: state.isPlaying,
+        user: state.current_user
     };
 };
 
