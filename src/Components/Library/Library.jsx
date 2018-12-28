@@ -44,7 +44,11 @@ const Library = props => {
                             <MediaCard
                                 key={playlist.id}
                                 link={`/playlist/${playlist.id}`}
-                                img={playlist.images[0].url}
+                                img={
+                                    playlist.images.length > 0
+                                        ? playlist.images[0].url
+                                        : null
+                                }
                                 content={playlist.name}
                                 playSong={() =>
                                     props.playSong(
