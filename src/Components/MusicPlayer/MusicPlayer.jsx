@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actionTypes from '../../store/actions/actionTypes';
 import {
@@ -14,6 +15,7 @@ import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import Slider from '@material-ui/lab/Slider';
+import { TrackDetailsLink } from '../UI/TrackDetailsLink';
 
 class MusicPlayer extends Component {
     constructor(props) {
@@ -286,11 +288,21 @@ class MusicPlayer extends Component {
                                             }
                                         </Typography>
                                         <Typography variant="subtitle1">
-                                            {
-                                                this.state.playingInfo
-                                                    .track_window.current_track
-                                                    .album.name
-                                            }
+                                            <TrackDetailsLink
+                                                to={
+                                                    '/album/' +
+                                                    this.state.playingInfo.track_window.current_track.album.uri.substring(
+                                                        14
+                                                    )
+                                                }
+                                            >
+                                                {
+                                                    this.state.playingInfo
+                                                        .track_window
+                                                        .current_track.album
+                                                        .name
+                                                }
+                                            </TrackDetailsLink>
                                         </Typography>
                                     </CardContent>
                                 </div>
