@@ -1,6 +1,7 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import * as actionTypes from "../../store/actions/actionTypes";
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import * as actionTypes from '../../store/actions/actionTypes';
 import {
     Grid,
     Typography,
@@ -8,12 +9,13 @@ import {
     IconButton,
     CardContent,
     CardMedia
-} from "@material-ui/core";
-import SkipNextIcon from "@material-ui/icons/SkipNext";
-import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
-import PauseIcon from "@material-ui/icons/Pause";
-import PlayArrowIcon from "@material-ui/icons/PlayArrow";
-import Slider from "@material-ui/lab/Slider";
+} from '@material-ui/core';
+import SkipNextIcon from '@material-ui/icons/SkipNext';
+import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
+import PauseIcon from '@material-ui/icons/Pause';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import Slider from '@material-ui/lab/Slider';
+import { TrackDetailsLink } from '../UI/TrackDetailsLink';
 
 class MusicPlayer extends Component {
     constructor(props) {
@@ -25,8 +27,8 @@ class MusicPlayer extends Component {
             playing: false,
             positionSliderValue: 50,
             volumeSliderValue: 50,
-            positionStamp: "00:00",
-            durationStamp: "00:00",
+            positionStamp: '00:00',
+            durationStamp: '00:00',
             player_init_error: false
         };
 
@@ -64,21 +66,21 @@ class MusicPlayer extends Component {
     };
 
     createEventHandlers = () => {
-        this.player.on("initialization_error", e => {
-            console.error("Initialization error ", e);
+        this.player.on('initialization_error', e => {
+            console.error('Initialization error ', e);
             this.setState({ player_init_error: true });
         });
-        this.player.on("authentication_error", e =>
-            console.error("Authentication error ", e)
+        this.player.on('authentication_error', e =>
+            console.error('Authentication error ', e)
         );
-        this.player.on("account_error", e =>
-            console.error("Account error ", e)
+        this.player.on('account_error', e =>
+            console.error('Account error ', e)
         );
-        this.player.on("playback_error", e =>
-            console.error("Playback error ", e)
+        this.player.on('playback_error', e =>
+            console.error('Playback error ', e)
         );
 
-        this.player.on("player_state_changed", state => {
+        this.player.on('player_state_changed', state => {
             if (state) {
                 console.log(state);
                 let { duration, position } = state;
@@ -104,9 +106,9 @@ class MusicPlayer extends Component {
             }
         });
 
-        this.player.on("ready", data => {
+        this.player.on('ready', data => {
             let { device_id } = data;
-            console.log("PLAYER CONNECTED ", device_id);
+            console.log('PLAYER CONNECTED ', device_id);
             // await this.setState({ deviceId: device_id });
             this.setState({ deviceId: device_id }, () => {
                 this.transferPlaybackHere();
@@ -124,7 +126,7 @@ class MusicPlayer extends Component {
     checkChangePosition = () => {
         this.player.getCurrentState().then(state => {
             if (state && this.state.playing) {
-                console.log("SEEK");
+                console.log('SEEK');
                 let { duration, position } = state;
                 // duration = 100%
                 // position = ?%
@@ -150,13 +152,13 @@ class MusicPlayer extends Component {
         // ONLY FOR PREMIUM USERS - transfer the playback automatically to the web app.
         // for normal users they have to go in the spotify app/website and change the device manually
         // user type is stored in redux state => this.props.user.type
-        if (this.props.user.product === "premium") {
+        if (this.props.user.product === 'premium') {
             const { deviceId } = this.state;
-            fetch("https://api.spotify.com/v1/me/player", {
-                method: "PUT",
+            fetch('https://api.spotify.com/v1/me/player', {
+                method: 'PUT',
                 headers: {
                     Authorization: `Bearer ${this.props.user.access_token}`,
-                    "Content-Type": "application/json"
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     device_ids: [deviceId],
@@ -167,7 +169,7 @@ class MusicPlayer extends Component {
                 .catch(e => console.error(e));
         } else {
             console.log(
-                "Cannot transfer playback automatically because you are not a premium user."
+                'Cannot transfer playback automatically because you are not a premium user.'
             );
         }
     };
@@ -204,21 +206,21 @@ class MusicPlayer extends Component {
     milisToMinutesAndSeconds = mil => {
         let minutes = Math.floor(mil / 60000);
         let seconds = ((mil % 60000) / 1000).toFixed(0);
-        return minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+        return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
     };
 
     render() {
         let mainContent = (
             <Card
                 style={{
-                    position: "fixed",
+                    position: 'fixed',
                     bottom: 0,
-                    width: "100%",
+                    width: '100%',
                     height: 100
                 }}
             >
                 <Typography
-                    variant="subheading"
+                    variant="subtitle1"
                     align="center"
                     style={{ marginTop: 20 }}
                 >
@@ -230,7 +232,7 @@ class MusicPlayer extends Component {
 
         if (this.state.player_init_error) {
             mainContent = (
-                <Typography variant="display2">
+                <Typography variant="h3">
                     Your device doesn't support the Spotify Playback SDK. Please
                     use the desktop browser
                 </Typography>
@@ -239,19 +241,19 @@ class MusicPlayer extends Component {
 
         if (this.player && this.state.playingInfo) {
             mainContent = (
-                <Card style={{ position: "fixed", bottom: 0, width: "100%" }}>
+                <Card style={{ position: 'fixed', bottom: 0, width: '100%' }}>
                     <Grid
                         container
                         justify="space-between"
                         spacing={0}
-                        style={{ width: "100%", margin: 0 }}
+                        style={{ width: '100%', margin: 0 }}
                     >
                         <Grid item xs={3}>
                             <Card
                                 style={{
-                                    display: "flex",
-                                    height: "100%",
-                                    boxShadow: "none"
+                                    display: 'flex',
+                                    height: '100%',
+                                    boxShadow: 'none'
                                 }}
                             >
                                 <CardMedia
@@ -271,33 +273,43 @@ class MusicPlayer extends Component {
                                 />
                                 <div
                                     style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        paddingLeft: "16",
-                                        paddingBottom: "16"
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        paddingLeft: '16',
+                                        paddingBottom: '16'
                                     }}
                                 >
-                                    <CardContent style={{ flex: "1 0 auto" }}>
-                                        <Typography variant="headline">
+                                    <CardContent style={{ flex: '1 0 auto' }}>
+                                        <Typography variant="h5">
                                             {
                                                 this.state.playingInfo
                                                     .track_window.current_track
                                                     .name
                                             }
                                         </Typography>
-                                        <Typography variant="subheading">
-                                            {
-                                                this.state.playingInfo
-                                                    .track_window.current_track
-                                                    .album.name
-                                            }
+                                        <Typography variant="subtitle1">
+                                            <TrackDetailsLink
+                                                to={
+                                                    '/album/' +
+                                                    this.state.playingInfo.track_window.current_track.album.uri.substring(
+                                                        14
+                                                    )
+                                                }
+                                            >
+                                                {
+                                                    this.state.playingInfo
+                                                        .track_window
+                                                        .current_track.album
+                                                        .name
+                                                }
+                                            </TrackDetailsLink>
                                         </Typography>
                                     </CardContent>
                                 </div>
                             </Card>
                         </Grid>
                         <Grid item xs={4}>
-                            <div style={{ textAlign: "center" }}>
+                            <div style={{ textAlign: 'center' }}>
                                 <IconButton
                                     disabled={
                                         this.state.playingInfo.track_window
@@ -334,7 +346,7 @@ class MusicPlayer extends Component {
                                     item
                                     xs={2}
                                     style={{
-                                        textAlign: "center",
+                                        textAlign: 'center',
                                         marginTop: 5
                                     }}
                                 >
@@ -352,7 +364,7 @@ class MusicPlayer extends Component {
                                     item
                                     xs={2}
                                     style={{
-                                        textAlign: "center",
+                                        textAlign: 'center',
                                         marginTop: 5
                                     }}
                                 >

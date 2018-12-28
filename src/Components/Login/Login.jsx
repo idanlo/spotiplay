@@ -1,9 +1,9 @@
-import React from "react";
-import { Grid, Typography } from "@material-ui/core";
+import React from 'react';
+import { Grid, Typography } from '@material-ui/core';
 
 const Login = () => (
     <Grid container>
-        <Grid item style={{ margin: "0 auto" }}>
+        <Grid item style={{ margin: '0 auto' }}>
             {/* <a
                 href="http://spotify-test-backend.herokuapp.com/login"
                 style={{ textDecoration: "none" }}
@@ -11,9 +11,9 @@ const Login = () => (
             {/* prod */}
             <a
                 href="http://localhost:8888/login"
-                style={{ textDecoration: "none" }}
+                style={{ textDecoration: 'none' }}
             >
-                <Typography variant="display4">Login with Spotify</Typography>
+                <Typography variant="h1">Login with Spotify</Typography>
             </a>
         </Grid>
     </Grid>

@@ -84,40 +84,47 @@ class MediaCard extends Component {
 
     render() {
         return (
-            <Grid item md={2} sm={6} xs={12}>
-                <Link to={this.props.link} style={{ textDecoration: "none" }}>
-                    <React.Fragment>
-                        <CardMedia
-                            rounded={this.props.rounded}
-                            onMouseEnter={() => this.toggleHover(true)}
-                            onMouseLeave={() => this.toggleHover(false)}
-                            img={this.props.img}
-                        >
-                            {this.state.hovered ? (
-                                <CardHover rounded={this.props.rounded}>
-                                    {this.props.playSong ? (
-                                        <PlayBtn
-                                            onClick={this.playSongHandler}
-                                        />
-                                    ) : null}
-                                </CardHover>
-                            ) : null}
-                        </CardMedia>
-                        <CardContent>
-                            <Content
-                                title={this.props.content}
-                                gutterBottom
-                                variant="body1"
-                                align={
-                                    this.props.rounded ? "center" : "inherit"
-                                }
+            <Fade in>
+                <Grid item md={2} sm={6} xs={12}>
+                    <Link
+                        to={this.props.link}
+                        style={{ textDecoration: "none" }}
+                    >
+                        <React.Fragment>
+                            <CardMedia
+                                rounded={this.props.rounded}
+                                onMouseEnter={() => this.toggleHover(true)}
+                                onMouseLeave={() => this.toggleHover(false)}
+                                img={this.props.img}
                             >
-                                {this.props.content}
-                            </Content>
-                        </CardContent>
-                    </React.Fragment>
-                </Link>
-            </Grid>
+                                {this.state.hovered ? (
+                                    <CardHover rounded={this.props.rounded}>
+                                        {this.props.playSong ? (
+                                            <PlayBtn
+                                                onClick={this.playSongHandler}
+                                            />
+                                        ) : null}
+                                    </CardHover>
+                                ) : null}
+                            </CardMedia>
+                            <CardContent>
+                                <Content
+                                    title={this.props.content}
+                                    gutterBottom
+                                    variant="body1"
+                                    align={
+                                        this.props.rounded
+                                            ? "center"
+                                            : "inherit"
+                                    }
+                                >
+                                    {this.props.content}
+                                </Content>
+                            </CardContent>
+                        </React.Fragment>
+                    </Link>
+                </Grid>
+            </Fade>
         );
     }
 }

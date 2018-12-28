@@ -1,26 +1,29 @@
-import React, { Component } from "react";
-import Layout from "./Containers/Layout/Layout";
-import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
-import CssBaseline from "@material-ui/core/CssBaseline/CssBaseline";
+import React, { Component } from 'react';
+import Layout from './Containers/Layout/Layout';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline/CssBaseline';
 
 class App extends Component {
     render() {
         const theme = createMuiTheme({
             palette: {
-                type: "dark",
+                type: 'dark',
 
                 primary: {
-                    light: "#757ce8",
-                    main: "#1db954",
-                    dark: "#191414",
-                    contrastText: "#fff"
+                    light: '#757ce8',
+                    main: '#1db954',
+                    dark: '#191414',
+                    contrastText: '#fff'
                 },
                 secondary: {
-                    light: "#ff7961",
-                    main: "#ffffff",
-                    dark: "#191414",
-                    contrastText: "#000"
+                    light: '#ff7961',
+                    main: '#ffffff',
+                    dark: '#191414',
+                    contrastText: '#000'
                 }
+            },
+            typography: {
+                useNextVariants: true
             }
         });
 
@@ -30,7 +33,7 @@ class App extends Component {
                     <Layout
                         style={{
                             fontFamily:
-                                "spotify-circular,Helvetica Neue,Helvetica,Arial,Hiragino Kaku Gothic Pro,Meiryo,MS Gothic,sans-serif"
+                                'spotify-circular,Helvetica Neue,Helvetica,Arial,Hiragino Kaku Gothic Pro,Meiryo,MS Gothic,sans-serif'
                         }}
                     />
                 </CssBaseline>
