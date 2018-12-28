@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import * as actionTypes from "../../store/actions/actionTypes";
-import { connect } from "react-redux";
-import axios from "axios";
-import { Album } from "react-spotify-api";
-import Vibrant from "node-vibrant";
+import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+import * as actionTypes from '../../store/actions/actionTypes';
+import { connect } from 'react-redux';
+import axios from 'axios';
+import { Album } from 'react-spotify-api';
+import Vibrant from 'node-vibrant';
 import {
     Grid,
     Typography,
@@ -13,11 +13,11 @@ import {
     ListItem,
     ListItemText,
     ListItemIcon
-} from "@material-ui/core";
-import PlayArrowIcon from "@material-ui/icons/PlayArrow";
-import PauseIcon from "@material-ui/icons/Pause";
-import { TrackDetailsLink } from "../UI/TrackDetailsLink";
-import { milisToMinutesAndSeconds } from "../../utils/index";
+} from '@material-ui/core';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import PauseIcon from '@material-ui/icons/Pause';
+import { TrackDetailsLink } from '../UI/TrackDetailsLink';
+import { milisToMinutesAndSeconds } from '../../utils/index';
 
 class AlbumView extends Component {
     state = {
@@ -28,8 +28,8 @@ class AlbumView extends Component {
         Vibrant.from(img)
             .getPalette()
             .then(palette => {
-                let rgb = palette.DarkMuted._rgb.join(", ");
-                let color = "rgb(" + rgb + ")";
+                let rgb = palette.DarkMuted._rgb.join(', ');
+                let color = 'rgb(' + rgb + ')';
                 let bgImage = `linear-gradient(${color}, rgb(6, 9, 10) 85%)`;
                 this.props.setBackgroundImage(bgImage);
             });
@@ -42,7 +42,7 @@ class AlbumView extends Component {
     checkIsAlbumSaved = () => {
         if (this.props.user.access_token && this.props.match.params.id) {
             axios
-                .get("https://api.spotify.com/v1/me/albums/contains", {
+                .get('https://api.spotify.com/v1/me/albums/contains', {
                     params: {
                         ids: this.props.match.params.id
                     },
@@ -59,7 +59,7 @@ class AlbumView extends Component {
     saveAlbum = () => {
         if (this.props.user.access_token && this.props.match.params.id) {
             axios({
-                method: "PUT",
+                method: 'PUT',
                 url: `https://api.spotify.com/v1/me/albums?ids=${
                     this.props.match.params.id
                 }`,
@@ -75,7 +75,7 @@ class AlbumView extends Component {
     playSongHandler = (track, album) => {
         if (track) {
             let uris;
-            if (track.type === "album") {
+            if (track.type === 'album') {
                 uris = JSON.stringify({
                     context_uri: track.uri
                 });
@@ -98,14 +98,14 @@ class AlbumView extends Component {
                     album ? (
                         <Grid container>
                             <Grid item xs={12} md={4}>
-                                <div style={{ textAlign: "center" }}>
+                                <div style={{ textAlign: 'center' }}>
                                     <img
                                         src={album.images[0].url}
                                         style={{
-                                            width: "70%",
-                                            height: "70%",
-                                            display: "block",
-                                            margin: "30px auto"
+                                            width: '70%',
+                                            height: '70%',
+                                            display: 'block',
+                                            margin: '30px auto'
                                         }}
                                         alt="Album"
                                         onLoad={() =>
@@ -114,25 +114,25 @@ class AlbumView extends Component {
                                             )
                                         }
                                     />
-                                    <Typography variant="title">
+                                    <Typography variant="h6">
                                         {album.name}
                                     </Typography>
                                     <Typography
-                                        variant="subheading"
+                                        variant="subtitle1"
                                         color="textSecondary"
                                     >
                                         {album.artists
                                             .map(artist => artist.name)
-                                            .join(", ")}
+                                            .join(', ')}
                                     </Typography>
                                     <Typography
-                                        variant="subheading"
+                                        variant="subtitle1"
                                         color="textSecondary"
                                     >
                                         {album.release_date.substring(0, 4) +
-                                            " • " +
+                                            ' • ' +
                                             album.tracks.items.length +
-                                            " songs"}
+                                            ' songs'}
                                     </Typography>
                                     <Button
                                         color="primary"
@@ -152,7 +152,7 @@ class AlbumView extends Component {
                                 </div>
                             </Grid>
                             <Grid item xs={12} md={8}>
-                                <List style={{ width: "100%" }}>
+                                <List style={{ width: '100%' }}>
                                     {album.tracks.items.map(track => {
                                         const ArtistAlbumLink = (
                                             <React.Fragment>
@@ -163,7 +163,7 @@ class AlbumView extends Component {
                                                         >
                                                             <TrackDetailsLink
                                                                 to={
-                                                                    "/artist/" +
+                                                                    '/artist/' +
                                                                     artist.id
                                                                 }
                                                             >
@@ -173,14 +173,14 @@ class AlbumView extends Component {
                                                             track.artists
                                                                 .length -
                                                                 1
-                                                                ? ", "
+                                                                ? ', '
                                                                 : null}
                                                         </React.Fragment>
                                                     )
                                                 )}
                                                 <span> • </span>
                                                 <TrackDetailsLink
-                                                    to={"/album/" + album.id}
+                                                    to={'/album/' + album.id}
                                                 >
                                                     {album.name}
                                                 </TrackDetailsLink>
@@ -196,14 +196,14 @@ class AlbumView extends Component {
                                                     this.props.isPlaying
                                                         ? {
                                                               background:
-                                                                  "#1db954"
+                                                                  '#1db954'
                                                           }
                                                         : null
                                                 }
                                             >
                                                 <ListItemIcon
                                                     style={{
-                                                        cursor: "pointer"
+                                                        cursor: 'pointer'
                                                     }}
                                                 >
                                                     {this.props
@@ -233,7 +233,7 @@ class AlbumView extends Component {
                                                 />
                                                 <ListItemText
                                                     style={{
-                                                        textAlign: "right"
+                                                        textAlign: 'right'
                                                     }}
                                                     primary={milisToMinutesAndSeconds(
                                                         track.duration_ms

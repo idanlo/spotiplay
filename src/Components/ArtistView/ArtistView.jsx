@@ -1,8 +1,8 @@
-import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import * as actionTypes from "../../store/actions/actionTypes";
-import { Artist } from "react-spotify-api";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+import * as actionTypes from '../../store/actions/actionTypes';
+import { Artist } from 'react-spotify-api';
+import { connect } from 'react-redux';
 import {
     Grid,
     Typography,
@@ -12,15 +12,15 @@ import {
     ListItem,
     ListItemText,
     ListItemIcon
-} from "@material-ui/core";
-import PlayArrowIcon from "@material-ui/icons/PlayArrow";
-import PauseIcon from "@material-ui/icons/Pause";
+} from '@material-ui/core';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import PauseIcon from '@material-ui/icons/Pause';
 
 class ArtistView extends Component {
     playSongHandler = track => {
         if (track) {
             let uris;
-            if (track.type === "artist") {
+            if (track.type === 'artist') {
                 uris = JSON.stringify({
                     context_uri: track.uri
                 });
@@ -42,18 +42,18 @@ class ArtistView extends Component {
             <Artist id={this.props.match.params.id}>
                 {artist =>
                     artist ? (
-                        <Grid item xs={12} style={{ width: "100%" }}>
-                            <div style={{ textAlign: "center" }}>
+                        <Grid item xs={12} style={{ width: '100%' }}>
+                            <div style={{ textAlign: 'center' }}>
                                 <Avatar
                                     src={artist.images[0].url}
                                     style={{
-                                        margin: "0 auto",
+                                        margin: '0 auto',
                                         width: 300,
                                         height: 300,
                                         marginBottom: 10
                                     }}
                                 />
-                                <Typography variant="title">
+                                <Typography variant="h6">
                                     {artist.name}
                                 </Typography>
                                 <Button
@@ -73,10 +73,10 @@ class ArtistView extends Component {
             <Artist.Tracks id={this.props.match.params.id}>
                 {tracks =>
                     tracks ? (
-                        <List style={{ width: "100%" }}>
+                        <List style={{ width: '100%' }}>
                             {tracks.tracks.map(track => (
                                 <ListItem key={track.id}>
-                                    <ListItemIcon style={{ cursor: "pointer" }}>
+                                    <ListItemIcon style={{ cursor: 'pointer' }}>
                                         {this.props.currentlyPlaying ===
                                             track.name &&
                                         this.props.isPlaying ? (

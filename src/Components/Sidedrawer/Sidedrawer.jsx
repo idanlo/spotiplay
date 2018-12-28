@@ -1,6 +1,6 @@
-import React from "react";
-import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import {
     List,
     ListItem,
@@ -14,13 +14,13 @@ import {
     Paper,
     Divider,
     ListItemAvatar
-} from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
-import SpotifyIcon from "./spotify.svg";
-import GithubIcon from "./github.svg";
-import HomeIcon from "@material-ui/icons/Home";
-import SearchIcon from "@material-ui/icons/Search";
-import LibraryMusicIcon from "@material-ui/icons/LibraryMusic";
+} from '@material-ui/core';
+import MenuIcon from '@material-ui/icons/Menu';
+import SpotifyIcon from './spotify.svg';
+import GithubIcon from './github.svg';
+import HomeIcon from '@material-ui/icons/Home';
+import SearchIcon from '@material-ui/icons/Search';
+import LibraryMusicIcon from '@material-ui/icons/LibraryMusic';
 
 const Sidedrawer = props => {
     let { recently_played } = props;
@@ -41,12 +41,12 @@ const Sidedrawer = props => {
                     </ListItemIcon>
                     <ListItemText>
                         <Typography
-                            variant="subheading"
+                            variant="subtitle1"
                             style={{
                                 fontSize: 13,
-                                textOverflow: "ellipsis",
-                                whiteSpace: "nowrap",
-                                overflow: "hidden"
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden'
                             }}
                         >
                             {track.track.album.name}
@@ -54,9 +54,9 @@ const Sidedrawer = props => {
                         <Typography
                             variant="caption"
                             style={{
-                                textOverflow: "ellipsis",
-                                whiteSpace: "nowrap",
-                                overflow: "hidden"
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden'
                             }}
                         >
                             album
@@ -97,9 +97,9 @@ const Sidedrawer = props => {
     );
 
     let mainContent = (
-        <div style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
+        <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
             <Button
-                style={{ margin: 20, position: "fixed", zIndex: 1000 }}
+                style={{ margin: 20, position: 'fixed', zIndex: 1000 }}
                 variant="fab"
                 color="primary"
                 onClick={props.toggleDrawer}
@@ -116,29 +116,29 @@ const Sidedrawer = props => {
         </div>
     );
 
-    if (props.width === "lg") {
+    if (props.width === 'lg') {
         mainContent = (
             <Paper
                 style={{
-                    height: "100%",
+                    height: '100%',
                     width: 255,
-                    backgroundColor: "rgba(0, 0, 0, 0.5)"
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)'
                 }}
             >
                 {mainList}
                 <div
                     style={{
-                        position: "absolute",
-                        top: "73%",
+                        position: 'absolute',
+                        top: '73%',
                         left: 0,
-                        width: "100%"
+                        width: '100%'
                     }}
                 >
                     <a
                         href="https://www.spotify.com"
                         target="_blank"
                         rel="noopener noreferrer"
-                        style={{ textDecoration: "none" }}
+                        style={{ textDecoration: 'none' }}
                     >
                         <ListItem button>
                             <ListItemAvatar>
@@ -154,7 +154,7 @@ const Sidedrawer = props => {
                         href="https://www.github.com/idanlo/spotify-test-frontend"
                         target="_blank"
                         rel="noopener noreferrer"
-                        style={{ textDecoration: "none" }}
+                        style={{ textDecoration: 'none' }}
                     >
                         <ListItem button>
                             <ListItemAvatar>

@@ -1,17 +1,17 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Switch, Route } from "react-router-dom";
-import { Grid, Typography } from "@material-ui/core";
-import MediaCard from "../MediaCard/MediaCard";
-import { Browse } from "react-spotify-api";
-import * as actionTypes from "../../store/actions/actionTypes";
-import Navigation from "../Navigation/Navigation";
-import styled from "styled-components";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Switch, Route } from 'react-router-dom';
+import { Grid, Typography } from '@material-ui/core';
+import MediaCard from '../MediaCard/MediaCard';
+import { Browse } from 'react-spotify-api';
+import * as actionTypes from '../../store/actions/actionTypes';
+import Navigation from '../Navigation/Navigation';
+import styled from 'styled-components';
 
 const TypographyHeader = styled(Typography).attrs({
-    variant: "display2",
-    align: "center",
-    color: "secondary"
+    variant: 'h3',
+    align: 'center',
+    color: 'secondary'
 })`
     padding: 10px;
 `;
@@ -19,27 +19,27 @@ const TypographyHeader = styled(Typography).attrs({
 class HomePage extends Component {
     componentDidMount() {
         this.props.setBackgroundImage(
-            "linear-gradient(rgb(58, 91, 95), rgb(6, 9, 10) 85%)"
+            'linear-gradient(rgb(58, 91, 95), rgb(6, 9, 10) 85%)'
         );
     }
 
     render() {
         const NavigationItems = [
             {
-                link: "/browse/featured",
-                text: "Featured"
+                link: '/browse/featured',
+                text: 'Featured'
             },
             {
-                link: "/browse/genres",
-                text: "Genres & Moods"
+                link: '/browse/genres',
+                text: 'Genres & Moods'
             },
             {
-                link: "/browse/new",
-                text: "New Releases"
+                link: '/browse/new',
+                text: 'New Releases'
             },
             {
-                link: "/browse/discover",
-                text: "Discover"
+                link: '/browse/discover',
+                text: 'Discover'
             }
         ];
 
@@ -48,11 +48,11 @@ class HomePage extends Component {
             recentlyPlayed = this.props.recently_played.map(track => {
                 let artist = track.track.artists
                     .map(name => name.name)
-                    .join(", ");
+                    .join(', ');
                 return (
                     <MediaCard
                         key={`${track.track.id} - ${track.played_at}`} // There is a problem with the artist id only because some recently played songs appear couple of times so they key isn't unique
-                        link={"/album/" + track.track.album.id}
+                        link={'/album/' + track.track.album.id}
                         img={track.track.album.images[0].url}
                         content={`${artist} - ${track.track.name}`}
                         playSong={() =>
@@ -75,7 +75,7 @@ class HomePage extends Component {
                     <Grid
                         container
                         spacing={16}
-                        style={{ margin: 0, width: "100%" }} // inline styles overwrite the material ui styles (no spacing on the left side)
+                        style={{ margin: 0, width: '100%' }} // inline styles overwrite the material ui styles (no spacing on the left side)
                     >
                         {recentlyPlayed}
                     </Grid>
@@ -94,7 +94,7 @@ class HomePage extends Component {
                             <Grid
                                 container
                                 spacing={16}
-                                style={{ margin: 0, width: "100%" }}
+                                style={{ margin: 0, width: '100%' }}
                             >
                                 {playlists.playlists.items.map(playlist => (
                                     <MediaCard
@@ -124,7 +124,7 @@ class HomePage extends Component {
                 <Grid
                     container
                     spacing={16}
-                    style={{ margin: 0, width: "100%" }}
+                    style={{ margin: 0, width: '100%' }}
                 >
                     <Browse.Category options={{ limit: 18 }}>
                         {categories =>
@@ -150,7 +150,7 @@ class HomePage extends Component {
                 <Grid
                     container
                     spacing={16}
-                    style={{ margin: 0, width: "100%" }}
+                    style={{ margin: 0, width: '100%' }}
                 >
                     <Browse.New options={{ limit: 18 }}>
                         {albums =>

@@ -1,16 +1,16 @@
-import React from "react";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import styled from "styled-components";
-import { Typography, Grid } from "@material-ui/core";
-import { Browse } from "react-spotify-api";
-import * as actionTypes from "../../store/actions/actionTypes";
-import MediaCard from "../MediaCard/MediaCard";
+import React from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import styled from 'styled-components';
+import { Typography, Grid } from '@material-ui/core';
+import { Browse } from 'react-spotify-api';
+import * as actionTypes from '../../store/actions/actionTypes';
+import MediaCard from '../MediaCard/MediaCard';
 
 const TypographyHeader = styled(Typography).attrs({
-    variant: "display2",
-    align: "center",
-    color: "secondary"
+    variant: 'h3',
+    align: 'center',
+    color: 'secondary'
 })`
     padding: 10px;
 `;
@@ -25,7 +25,7 @@ const GenreView = props => {
                         <Grid
                             container
                             spacing={16}
-                            style={{ margin: 0, width: "100%" }}
+                            style={{ margin: 0, width: '100%' }}
                         >
                             <Browse.Category
                                 id={props.match.params.id}

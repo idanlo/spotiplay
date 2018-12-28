@@ -1,6 +1,6 @@
-import React from "react";
-import { withRouter, Switch, Route } from "react-router-dom";
-import { connect } from "react-redux";
+import React from 'react';
+import { withRouter, Switch, Route } from 'react-router-dom';
+import { connect } from 'react-redux';
 import {
     Grid,
     Typography,
@@ -8,38 +8,38 @@ import {
     ListItem,
     ListItemText,
     ListItemIcon
-} from "@material-ui/core";
-import PauseIcon from "@material-ui/icons/Pause";
-import PlayArrowIcon from "@material-ui/icons/PlayArrow";
-import * as actionTypes from "../../../store/actions/actionTypes";
-import { Search } from "react-spotify-api";
-import Navigation from "../../Navigation/Navigation";
-import MediaCard from "../../MediaCard/MediaCard";
-import { TrackDetailsLink } from "../../UI/TrackDetailsLink";
-import { milisToMinutesAndSeconds } from "../../../utils/index";
+} from '@material-ui/core';
+import PauseIcon from '@material-ui/icons/Pause';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import * as actionTypes from '../../../store/actions/actionTypes';
+import { Search } from 'react-spotify-api';
+import Navigation from '../../Navigation/Navigation';
+import MediaCard from '../../MediaCard/MediaCard';
+import { TrackDetailsLink } from '../../UI/TrackDetailsLink';
+import { milisToMinutesAndSeconds } from '../../../utils/index';
 
 const SearchResults = props => {
-    console.log("[SearchResults] Update!");
+    console.log('[SearchResults] Update!');
     const NavigationItems = [
         {
-            link: "/search/results/" + props.match.params.query,
-            text: "Top Reults"
+            link: '/search/results/' + props.match.params.query,
+            text: 'Top Reults'
         },
         {
-            link: "/search/artists/" + props.match.params.query,
-            text: "Artists"
+            link: '/search/artists/' + props.match.params.query,
+            text: 'Artists'
         },
         {
-            link: "/search/tracks/" + props.match.params.query,
-            text: "Tracks"
+            link: '/search/tracks/' + props.match.params.query,
+            text: 'Tracks'
         },
         {
-            link: "/search/albums/" + props.match.params.query,
-            text: "Albums"
+            link: '/search/albums/' + props.match.params.query,
+            text: 'Albums'
         },
         {
-            link: "/search/playlists/" + props.match.params.query,
-            text: "Playlists"
+            link: '/search/playlists/' + props.match.params.query,
+            text: 'Playlists'
         }
     ];
 
@@ -61,11 +61,11 @@ const SearchResults = props => {
                             <Grid
                                 container
                                 spacing={16}
-                                style={{ margin: 0, width: "100%" }}
+                                style={{ margin: 0, width: '100%' }}
                             >
                                 <MediaCard
                                     rounded
-                                    link={"/artist/" + data.artists.items[0].id}
+                                    link={'/artist/' + data.artists.items[0].id}
                                     img={
                                         data.artists.items[0].images.length > 0
                                             ? data.artists.items[0].images[0]
@@ -98,7 +98,7 @@ const SearchResults = props => {
                                                                 >
                                                                     <TrackDetailsLink
                                                                         to={
-                                                                            "/artist/" +
+                                                                            '/artist/' +
                                                                             artist.id
                                                                         }
                                                                     >
@@ -111,7 +111,7 @@ const SearchResults = props => {
                                                                         .artists
                                                                         .length -
                                                                         1
-                                                                        ? ", "
+                                                                        ? ', '
                                                                         : null}
                                                                 </React.Fragment>
                                                             )
@@ -119,7 +119,7 @@ const SearchResults = props => {
                                                         <span> • </span>
                                                         <TrackDetailsLink
                                                             to={
-                                                                "/album/" +
+                                                                '/album/' +
                                                                 track.album.id
                                                             }
                                                         >
@@ -136,7 +136,7 @@ const SearchResults = props => {
                                                             props.isPlaying
                                                                 ? {
                                                                       background:
-                                                                          "#1db954"
+                                                                          '#1db954'
                                                                   }
                                                                 : null
                                                         }
@@ -144,7 +144,7 @@ const SearchResults = props => {
                                                         <ListItemIcon
                                                             style={{
                                                                 cursor:
-                                                                    "pointer"
+                                                                    'pointer'
                                                             }}
                                                         >
                                                             {props.currentlyPlaying ===
@@ -185,7 +185,7 @@ const SearchResults = props => {
                                                         <ListItemText
                                                             style={{
                                                                 textAlign:
-                                                                    "right"
+                                                                    'right'
                                                             }}
                                                             primary={milisToMinutesAndSeconds(
                                                                 track.duration_ms
@@ -199,11 +199,11 @@ const SearchResults = props => {
                             </Grid>
                         ) : null}
                         {data.artists.items.length > 0 ? (
-                            <div style={{ width: "100%" }}>
+                            <div style={{ width: '100%' }}>
                                 <Typography
                                     style={{ padding: 10 }}
                                     color="secondary"
-                                    variant="title"
+                                    variant="h6"
                                     align="center"
                                 >
                                     Artists
@@ -211,7 +211,7 @@ const SearchResults = props => {
                                 <Grid
                                     container
                                     spacing={16}
-                                    style={{ margin: 0, width: "100%" }}
+                                    style={{ margin: 0, width: '100%' }}
                                 >
                                     {data.artists.items
                                         .slice(0, 6)
@@ -219,7 +219,7 @@ const SearchResults = props => {
                                             <MediaCard
                                                 rounded
                                                 key={artist.id}
-                                                link={"/artist/" + artist.id}
+                                                link={'/artist/' + artist.id}
                                                 img={
                                                     artist.images.length > 0
                                                         ? artist.images[0].url
@@ -240,11 +240,11 @@ const SearchResults = props => {
                             </div>
                         ) : null}
                         {data.albums.items.length > 0 ? (
-                            <div style={{ width: "100%" }}>
+                            <div style={{ width: '100%' }}>
                                 <Typography
                                     style={{ padding: 10 }}
                                     color="secondary"
-                                    variant="title"
+                                    variant="h6"
                                     align="center"
                                 >
                                     Albums
@@ -252,14 +252,14 @@ const SearchResults = props => {
                                 <Grid
                                     container
                                     spacing={16}
-                                    style={{ margin: 0, width: "100%" }}
+                                    style={{ margin: 0, width: '100%' }}
                                 >
                                     {data.albums.items
                                         .slice(0, 6)
                                         .map(album => (
                                             <MediaCard
                                                 key={album.id}
-                                                link={"/album/" + album.id}
+                                                link={'/album/' + album.id}
                                                 img={
                                                     album.images.length > 0
                                                         ? album.images[0].url
@@ -267,7 +267,7 @@ const SearchResults = props => {
                                                 }
                                                 content={`${album.artists
                                                     .map(a => a.name)
-                                                    .join(", ")} - ${
+                                                    .join(', ')} - ${
                                                     album.name
                                                 }`}
                                                 playSong={() =>
@@ -300,13 +300,13 @@ const SearchResults = props => {
                     <Grid
                         container
                         spacing={16}
-                        style={{ margin: 0, width: "100%" }}
+                        style={{ margin: 0, width: '100%' }}
                     >
                         {data.artists.items.map(artist => (
                             <MediaCard
                                 rounded
                                 key={artist.id}
-                                link={"/album/" + artist.id}
+                                link={'/album/' + artist.id}
                                 img={
                                     artist.images.length > 0
                                         ? artist.images[0].url
@@ -335,25 +335,25 @@ const SearchResults = props => {
         <Search query={props.match.params.query} track>
             {data =>
                 data && data.tracks ? (
-                    <List style={{ width: "100%" }}>
+                    <List style={{ width: '100%' }}>
                         {data.tracks.items.map(track => {
                             const ArtistAlbumLink = (
                                 <React.Fragment>
                                     {track.artists.map((artist, index) => (
                                         <React.Fragment key={artist.id}>
                                             <TrackDetailsLink
-                                                to={"/artist/" + artist.id}
+                                                to={'/artist/' + artist.id}
                                             >
                                                 {artist.name}
                                             </TrackDetailsLink>
                                             {index !== track.artists.length - 1
-                                                ? ", "
+                                                ? ', '
                                                 : null}
                                         </React.Fragment>
                                     ))}
                                     <span> • </span>
                                     <TrackDetailsLink
-                                        to={"/album/" + track.album.id}
+                                        to={'/album/' + track.album.id}
                                     >
                                         {track.album.name}
                                     </TrackDetailsLink>
@@ -365,11 +365,11 @@ const SearchResults = props => {
                                     style={
                                         props.currentlyPlaying === track.name &&
                                         props.isPlaying
-                                            ? { background: "#1db954" }
+                                            ? { background: '#1db954' }
                                             : null
                                     }
                                 >
-                                    <ListItemIcon style={{ cursor: "pointer" }}>
+                                    <ListItemIcon style={{ cursor: 'pointer' }}>
                                         {props.currentlyPlaying ===
                                             track.name && props.isPlaying ? (
                                             <PauseIcon
@@ -396,7 +396,7 @@ const SearchResults = props => {
                                         secondary={ArtistAlbumLink}
                                     />
                                     <ListItemText
-                                        style={{ textAlign: "right" }}
+                                        style={{ textAlign: 'right' }}
                                         primary={milisToMinutesAndSeconds(
                                             track.duration_ms
                                         )}
@@ -421,12 +421,12 @@ const SearchResults = props => {
                     <Grid
                         container
                         spacing={16}
-                        style={{ margin: 0, width: "100%" }}
+                        style={{ margin: 0, width: '100%' }}
                     >
                         {data.albums.items.map(album => (
                             <MediaCard
                                 key={album.id}
-                                link={"/album/" + album.id}
+                                link={'/album/' + album.id}
                                 img={
                                     album.images.length > 0
                                         ? album.images[0].url
@@ -434,7 +434,7 @@ const SearchResults = props => {
                                 }
                                 content={`${album.artists
                                     .map(a => a.name)
-                                    .join(", ")} - ${album.name}`}
+                                    .join(', ')} - ${album.name}`}
                                 playSong={() =>
                                     props.playSong(
                                         JSON.stringify({
@@ -461,12 +461,12 @@ const SearchResults = props => {
                     <Grid
                         container
                         spacing={16}
-                        style={{ margin: 0, width: "100%" }}
+                        style={{ margin: 0, width: '100%' }}
                     >
                         {data.playlists.items.map(playlist => (
                             <MediaCard
                                 key={playlist.id}
-                                link={"/playlist/" + playlist.id}
+                                link={'/playlist/' + playlist.id}
                                 img={
                                     playlist.images.length > 0
                                         ? playlist.images[0].url
@@ -490,7 +490,7 @@ const SearchResults = props => {
     // }
 
     return (
-        <Grid container style={{ width: "100%", margin: 0 }}>
+        <Grid container style={{ width: '100%', margin: 0 }}>
             <React.Fragment>
                 <Navigation items={NavigationItems} width="60%" />
                 <Switch>

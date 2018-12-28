@@ -1,9 +1,9 @@
-import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import * as actionTypes from "../../store/actions/actionTypes";
-import { connect } from "react-redux";
-import { Playlist } from "react-spotify-api";
-import Vibrant from "node-vibrant";
+import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+import * as actionTypes from '../../store/actions/actionTypes';
+import { connect } from 'react-redux';
+import { Playlist } from 'react-spotify-api';
+import Vibrant from 'node-vibrant';
 import {
     Grid,
     Typography,
@@ -12,18 +12,18 @@ import {
     ListItem,
     ListItemText,
     ListItemIcon
-} from "@material-ui/core";
-import PlayArrowIcon from "@material-ui/icons/PlayArrow";
-import { TrackDetailsLink } from "../UI/TrackDetailsLink";
-import PauseIcon from "@material-ui/icons/Pause";
+} from '@material-ui/core';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import { TrackDetailsLink } from '../UI/TrackDetailsLink';
+import PauseIcon from '@material-ui/icons/Pause';
 
 class PlaylistView extends Component {
     setBackgroundImage = url => {
         Vibrant.from(url)
             .getPalette()
             .then(palette => {
-                let rgb = palette.DarkMuted._rgb.join(", ");
-                let color = "rgb(" + rgb + ")";
+                let rgb = palette.DarkMuted._rgb.join(', ');
+                let color = 'rgb(' + rgb + ')';
                 let bgImage = `linear-gradient(${color}, rgb(6, 9, 10) 85%)`;
                 this.props.setBackgroundImage(bgImage);
             });
@@ -32,7 +32,7 @@ class PlaylistView extends Component {
     playSongHandler = (track, playlist) => {
         if (track) {
             let uris;
-            if (track.type === "playlist") {
+            if (track.type === 'playlist') {
                 uris = JSON.stringify({
                     context_uri: playlist.uri
                 });
@@ -55,14 +55,14 @@ class PlaylistView extends Component {
                     playlist ? (
                         <Grid container>
                             <Grid item xs={12} md={4}>
-                                <div style={{ textAlign: "center" }}>
+                                <div style={{ textAlign: 'center' }}>
                                     <img
                                         src={playlist.images[0].url}
                                         style={{
-                                            width: "70%",
-                                            height: "70%",
-                                            display: "block",
-                                            margin: "30px auto"
+                                            width: '70%',
+                                            height: '70%',
+                                            display: 'block',
+                                            margin: '30px auto'
                                         }}
                                         alt="Playlist"
                                         onLoad={() =>
@@ -71,21 +71,21 @@ class PlaylistView extends Component {
                                             )
                                         }
                                     />
-                                    <Typography variant="title">
+                                    <Typography variant="h6">
                                         {playlist.name}
                                     </Typography>
                                     <Typography
-                                        variant="subheading"
+                                        variant="subtitle1"
                                         color="textSecondary"
                                     >
                                         {playlist.owner.display_name}
                                     </Typography>
                                     <Typography
-                                        variant="subheading"
+                                        variant="subtitle1"
                                         color="textSecondary"
                                     >
                                         {playlist.tracks.items.length +
-                                            " songs"}
+                                            ' songs'}
                                     </Typography>
                                     <Button
                                         color="primary"
@@ -98,7 +98,7 @@ class PlaylistView extends Component {
                                 </div>
                             </Grid>
                             <Grid item xs={12} md={8}>
-                                <List style={{ width: "100%" }}>
+                                <List style={{ width: '100%' }}>
                                     {playlist.tracks.items.map(track => {
                                         let ArtistAlbumLink = (
                                             <React.Fragment>
@@ -118,7 +118,7 @@ class PlaylistView extends Component {
                                                             track.track.artists
                                                                 .length -
                                                                 1
-                                                                ? ", "
+                                                                ? ', '
                                                                 : null}
                                                         </React.Fragment>
                                                     )
@@ -143,14 +143,14 @@ class PlaylistView extends Component {
                                                     this.props.isPlaying
                                                         ? {
                                                               background:
-                                                                  "#1db954"
+                                                                  '#1db954'
                                                           }
                                                         : null
                                                 }
                                             >
                                                 <ListItemIcon
                                                     style={{
-                                                        cursor: "pointer"
+                                                        cursor: 'pointer'
                                                     }}
                                                 >
                                                     {this.props
