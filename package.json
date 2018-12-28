@@ -9,6 +9,7 @@
     "axios": "^0.18.0",
     "enzyme": "^3.8.0",
     "enzyme-adapter-react-16": "^1.7.1",
+    "merge": "^1.2.1",
     "node-vibrant": "^3.0.0",
     "prop-types": "^15.6.2",
     "react": "^16.7.0",
