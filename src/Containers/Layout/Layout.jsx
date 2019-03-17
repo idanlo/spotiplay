@@ -92,10 +92,14 @@ class Layout extends Component {
                     })
                     .catch(err => console.log(err));
             } else {
-                let scope =
-                    'user-read-private user-read-birthdate user-read-email playlist-modify-private playlist-read-private playlist-read-collaborative playlist-modify-public user-follow-modify user-follow-read app-remote-control streaming user-read-currently-playing user-modify-playback-state user-read-playback-state user-library-modify user-library-read user-read-recently-played user-top-read';
                 window.location.replace(
-                    `https://accounts.spotify.com/authorize?client_id=4266b38056c54d47a5480dc099f59cb6&redirect_uri=http://localhost:3000&scope=${scope}&response_type=token`
+                    `https://accounts.spotify.com/authorize?client_id=${
+                        process.env.REACT_APP_SPOTIFY_CLIENT_ID
+                    }&redirect_uri=${
+                        process.env.REACT_APP_SPOTIFY_REDIRECT_URI
+                    }&scope=${
+                        process.env.REACT_APP_SPOTIFY_SCOPE
+                    }&response_type=token`
                 );
             }
         }
