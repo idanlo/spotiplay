@@ -1,4 +1,4 @@
-import React, { Component, Suspense } from 'react';
+import React, { Component } from 'react';
 import { Switch, Route, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { SpotifyApiContext } from 'react-spotify-api';
@@ -18,17 +18,17 @@ import Library from '../../Components/Library/Library';
 import ArtistView from '../../Components/ArtistView/ArtistView';
 import GenreView from '../../Components/GenreView/GenreView';
 
-// const Search = React.lazy(() => import("../../Components/Search/Search"));
-// const NotFound = React.lazy(() => import("../../Components/NotFound/NotFound"));
+// const Search = React.lazy(() => import('../../Components/Search/Search'));
+// const NotFound = React.lazy(() => import('../../Components/NotFound/NotFound'));
 // const AlbumView = React.lazy(() =>
-//     import("../../Components/AlbumView/AlbumView")
+//     import('../../Components/AlbumView/AlbumView')
 // );
-// const Library = React.lazy(() => import("../../Components/Library/Library"));
+// const Library = React.lazy(() => import('../../Components/Library/Library'));
 // const ArtistView = React.lazy(() =>
-//     import("../../Components/ArtistView/ArtistView")
+//     import('../../Components/ArtistView/ArtistView')
 // );
 // const GenreView = React.lazy(() =>
-//     import("../../Components/GenreView/GenreView")
+//     import('../../Components/GenreView/GenreView')
 // );
 
 const GridSidedrawer = styled(Grid)`
@@ -187,52 +187,42 @@ class Layout extends Component {
                                 <Route
                                     path="/search"
                                     exact
-                                    // component={WaitingComponent(Search)}
                                     component={Search}
                                 />
 
                                 <Route
                                     path="/search/:item/:query"
                                     exact
-                                    // component={WaitingComponent(Search)}
                                     component={Search}
                                 />
 
                                 <Route
                                     path="/playlist/:id"
                                     exact
-                                    // component={WaitingComponent(PlaylistView)}
                                     component={PlaylistView}
                                 />
 
                                 <Route
                                     path="/album/:id"
                                     exact
-                                    // component={WaitingComponent(AlbumView)}
                                     component={AlbumView}
                                 />
 
                                 <Route
                                     path="/genre/:id"
-                                    // component={WaitingComponent(GenreView)}
                                     component={GenreView}
                                 />
                                 <Route
                                     path="/artist/:id"
                                     exact
-                                    // component={WaitingComponent(ArtistView)}
                                     component={ArtistView}
                                 />
                                 <Route
                                     path="/library/:item"
                                     exact
-                                    // component={WaitingComponent(Library)}
                                     component={Library}
                                 />
-                                <Route
-                                    // component={WaitingComponent(NotFound)}
-                                    component={NotFound}
-                                />
+                                <Route component={NotFound} />
                             </Switch>
                         </GridHomePage>
                     </Grid>
@@ -245,14 +235,6 @@ class Layout extends Component {
             </Switch>
         );
     }
-}
-
-function WaitingComponent(Comp) {
-    return props => (
-        // <Suspense fallback={<h1>Loading...</h1>}>
-        <Comp {...props} />
-        // </Suspense>
-    );
 }
 
 const mapStateToProps = state => {

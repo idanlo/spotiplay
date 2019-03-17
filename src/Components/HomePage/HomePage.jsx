@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Switch, Route } from 'react-router-dom';
 import { Grid, Typography } from '@material-ui/core';
 import MediaCard from '../MediaCard/MediaCard';
-import { Browse } from 'react-spotify-api';
+import { BrowseFeatured, BrowseCategories, BrowseNew } from 'react-spotify-api';
 import * as actionTypes from '../../store/actions/actionTypes';
 import Navigation from '../Navigation/Navigation';
 import styled from 'styled-components';
@@ -84,7 +84,7 @@ class HomePage extends Component {
         }
 
         let featuredPlaylists = (
-            <Browse.Featured options={{ limit: 12 }}>
+            <BrowseFeatured options={{ limit: 12 }}>
                 {playlists =>
                     playlists ? (
                         <div>
@@ -115,7 +115,7 @@ class HomePage extends Component {
                         </div>
                     ) : null
                 }
-            </Browse.Featured>
+            </BrowseFeatured>
         );
 
         let genres = (
@@ -126,7 +126,7 @@ class HomePage extends Component {
                     spacing={16}
                     style={{ margin: 0, width: '100%' }}
                 >
-                    <Browse.Category options={{ limit: 18 }}>
+                    <BrowseCategories options={{ limit: 18 }}>
                         {categories =>
                             categories
                                 ? categories.categories.items.map(genre => (
@@ -139,7 +139,7 @@ class HomePage extends Component {
                                   ))
                                 : null
                         }
-                    </Browse.Category>
+                    </BrowseCategories>
                 </Grid>
             </div>
         );
@@ -152,7 +152,7 @@ class HomePage extends Component {
                     spacing={16}
                     style={{ margin: 0, width: '100%' }}
                 >
-                    <Browse.New options={{ limit: 18 }}>
+                    <BrowseNew options={{ limit: 18 }}>
                         {albums =>
                             albums
                                 ? albums.albums.items.map(album => (
@@ -172,7 +172,7 @@ class HomePage extends Component {
                                   ))
                                 : null
                         }
-                    </Browse.New>
+                    </BrowseNew>
                 </Grid>
             </div>
         );

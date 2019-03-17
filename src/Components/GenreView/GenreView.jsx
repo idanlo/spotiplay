@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import { Typography, Grid } from '@material-ui/core';
-import { Browse } from 'react-spotify-api';
+import { BrowseCategory, BrowseCategoryPlaylists } from 'react-spotify-api';
 import * as actionTypes from '../../store/actions/actionTypes';
 import MediaCard from '../MediaCard/MediaCard';
 
@@ -17,7 +17,7 @@ const TypographyHeader = styled(Typography).attrs({
 
 const GenreView = props => {
     return (
-        <Browse.Category id={props.match.params.id}>
+        <BrowseCategory id={props.match.params.id}>
             {genre =>
                 genre ? (
                     <div>
@@ -27,7 +27,7 @@ const GenreView = props => {
                             spacing={16}
                             style={{ margin: 0, width: '100%' }}
                         >
-                            <Browse.Category
+                            <BrowseCategoryPlaylists
                                 id={props.match.params.id}
                                 playlists
                             >
@@ -59,14 +59,14 @@ const GenreView = props => {
                                         </h1>
                                     )
                                 }
-                            </Browse.Category>
+                            </BrowseCategoryPlaylists>
                         </Grid>
                     </div>
                 ) : (
                     <h1>Loading Genre...</h1>
                 )
             }
-        </Browse.Category>
+        </BrowseCategory>
     );
 };
 
