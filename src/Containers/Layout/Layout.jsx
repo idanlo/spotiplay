@@ -66,9 +66,9 @@ class Layout extends Component {
     };
 
     componentDidMount() {
-        if (this.isOnMobile()) {
-            return this.setState({ isOnMobile: true });
-        }
+        // if (this.isOnMobile()) {
+        //     this.setState({ isOnMobile: true });
+        // }
         let params = this.getHashParams();
         console.log(params);
         if (!this.props.user) {
@@ -93,15 +93,13 @@ class Layout extends Component {
                     })
                     .catch(err => console.log(err));
             } else {
-                window.location.replace(
-                    `https://accounts.spotify.com/authorize?client_id=${
-                        process.env.REACT_APP_SPOTIFY_CLIENT_ID
-                    }&redirect_uri=${
-                        process.env.REACT_APP_SPOTIFY_REDIRECT_URI
-                    }&scope=${
-                        process.env.REACT_APP_SPOTIFY_SCOPE
-                    }&response_type=token`
-                );
+                window.location = `https://accounts.spotify.com/authorize?client_id=${
+                    process.env.REACT_APP_SPOTIFY_CLIENT_ID
+                }&redirect_uri=${
+                    process.env.REACT_APP_SPOTIFY_REDIRECT_URI
+                }&scope=${
+                    process.env.REACT_APP_SPOTIFY_SCOPE
+                }&response_type=token`;
             }
         }
     }
