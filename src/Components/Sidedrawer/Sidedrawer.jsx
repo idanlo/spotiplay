@@ -100,7 +100,7 @@ const Sidedrawer = props => {
         <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
             <Button
                 style={{ margin: 20, position: 'fixed', zIndex: 1000 }}
-                variant="fab"
+                variant="contained"
                 color="primary"
                 onClick={props.toggleDrawer}
             >
@@ -116,7 +116,7 @@ const Sidedrawer = props => {
         </div>
     );
 
-    if (props.width === 'lg') {
+    if (props.width === 'lg' || props.width === 'xl') {
         mainContent = (
             <Paper
                 style={{
