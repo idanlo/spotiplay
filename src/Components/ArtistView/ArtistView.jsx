@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import * as actionTypes from '../../store/actions/actionTypes';
-import { Artist } from 'react-spotify-api';
+import { Artist, ArtistTracks } from 'react-spotify-api';
 import { connect } from 'react-redux';
 import {
     Grid,
@@ -70,7 +70,7 @@ class ArtistView extends Component {
         );
 
         let ArtistTopTracksList = (
-            <Artist.Tracks id={this.props.match.params.id}>
+            <ArtistTracks id={this.props.match.params.id}>
                 {tracks =>
                     tracks ? (
                         <List style={{ width: '100%' }}>
@@ -100,7 +100,7 @@ class ArtistView extends Component {
                         </List>
                     ) : null
                 }
-            </Artist.Tracks>
+            </ArtistTracks>
         );
         return (
             <Grid container>

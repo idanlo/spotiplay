@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import * as actionTypes from '../../store/actions/actionTypes';
 import { Switch, Route } from 'react-router-dom';
-import { User } from 'react-spotify-api';
+import { UserTracks, UserAlbums, UserPlaylists } from 'react-spotify-api';
 import {
     Grid,
     List,
@@ -32,7 +32,7 @@ const NavigationItems = [
 
 const Library = props => {
     let savedPlaylists = (
-        <User.Playlists>
+        <UserPlaylists>
             {playlists =>
                 playlists ? (
                     <Grid
@@ -62,11 +62,11 @@ const Library = props => {
                     </Grid>
                 ) : null
             }
-        </User.Playlists>
+        </UserPlaylists>
     );
 
     let savedAlbums = (
-        <User.Albums>
+        <UserAlbums>
             {albums =>
                 albums ? (
                     <Grid
@@ -92,11 +92,11 @@ const Library = props => {
                     </Grid>
                 ) : null
             }
-        </User.Albums>
+        </UserAlbums>
     );
 
     let savedTracks = (
-        <User.Tracks>
+        <UserTracks>
             {tracks =>
                 tracks ? (
                     <List>
@@ -140,7 +140,7 @@ const Library = props => {
                     </List>
                 ) : null
             }
-        </User.Tracks>
+        </UserTracks>
     );
 
     return (
