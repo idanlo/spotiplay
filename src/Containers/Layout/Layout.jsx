@@ -1,22 +1,22 @@
-import React, { Component, Suspense } from "react";
-import { Switch, Route, withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { SpotifyApiContext } from "react-spotify-api";
-import styled from "styled-components";
-import * as actionTypes from "../../store/actions/actionTypes";
-import HomePage from "../../Components/HomePage/HomePage";
-import MusicPlayer from "../../Components/MusicPlayer/MusicPlayer";
-import Login from "../../Components/Login/Login";
-import Sidedrawer from "../../Components/Sidedrawer/Sidedrawer";
-import PlaylistView from "../../Components/PlaylistView/PlaylistView";
-import * as SpotifyWebApi from "spotify-web-api-js";
-import { withWidth, Grid } from "@material-ui/core";
-import Search from "../../Components/Search/Search";
-import NotFound from "../../Components/NotFound/NotFound";
-import AlbumView from "../../Components/AlbumView/AlbumView";
-import Library from "../../Components/Library/Library";
-import ArtistView from "../../Components/ArtistView/ArtistView";
-import GenreView from "../../Components/GenreView/GenreView";
+import React, { Component, Suspense } from 'react';
+import { Switch, Route, withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { SpotifyApiContext } from 'react-spotify-api';
+import styled from 'styled-components';
+import * as actionTypes from '../../store/actions/actionTypes';
+import HomePage from '../../Components/HomePage/HomePage';
+import MusicPlayer from '../../Components/MusicPlayer/MusicPlayer';
+import Login from '../../Components/Login/Login';
+import Sidedrawer from '../../Components/Sidedrawer/Sidedrawer';
+import PlaylistView from '../../Components/PlaylistView/PlaylistView';
+import * as SpotifyWebApi from 'spotify-web-api-js';
+import { withWidth, Grid } from '@material-ui/core';
+import Search from '../../Components/Search/Search';
+import NotFound from '../../Components/NotFound/NotFound';
+import AlbumView from '../../Components/AlbumView/AlbumView';
+import Library from '../../Components/Library/Library';
+import ArtistView from '../../Components/ArtistView/ArtistView';
+import GenreView from '../../Components/GenreView/GenreView';
 
 // const Search = React.lazy(() => import("../../Components/Search/Search"));
 // const NotFound = React.lazy(() => import("../../Components/NotFound/NotFound"));
@@ -49,10 +49,6 @@ class Layout extends Component {
         isOnMobile: false
     };
 
-    componentDidUpdate() {
-        console.log("[Layout] UPDATE!");
-    }
-
     isOnMobile = () => {
         var check = false;
         (function(a) {
@@ -73,55 +69,18 @@ class Layout extends Component {
         if (this.isOnMobile()) {
             return this.setState({ isOnMobile: true });
         }
-        console.log(this.props.location);
         let spotifyWebApi = new SpotifyWebApi();
-        if (localStorage.getItem("REFRESH_TOKEN")) {
-            let tok = {
-                refresh_token: localStorage.getItem("REFRESH_TOKEN")
-            };
-            fetch("http://localhost:8888/refresh", {
-                method: "POST",
-                body: JSON.stringify(tok)
-            })
-                .then(res => res.json())
-                .then(data => {
-                    spotifyWebApi.setAccessToken(data.access_token);
-
-                    spotifyWebApi
-                        .getMe()
-                        .then(res => {
-                            let newUser = {
-                                access_token: data.access_token,
-                                refresh_token: localStorage.getItem(
-                                    "REFRESH_TOKEN"
-                                ),
-                                displayName: res.display_name,
-                                email: res.email,
-                                id: res.id,
-                                product: res.product,
-                                country: res.country
-                            };
-                            this.logInUserAndGetInfo(newUser);
-                            this.props.fetchRecentlyPlayed({ limit: 12 });
-                        })
-                        .catch(err => console.log(err));
-                });
-        } else {
-            let params = this.getHashParams();
-            if (
-                "access_token" in params &&
-                "refresh_token" in params &&
-                !this.props.user
-            ) {
-                localStorage.setItem("REFRESH_TOKEN", params.refresh_token);
-
+        let params = this.getHashParams();
+        console.log(params);
+        if (!this.props.user) {
+            if ('access_token' in params) {
                 spotifyWebApi.setAccessToken(params.access_token);
 
                 spotifyWebApi
                     .getMe()
                     .then(res => {
                         let newUser = {
-                            ...params,
+                            access_token: params.access_token,
                             displayName: res.display_name,
                             email: res.email,
                             id: res.id,
@@ -132,6 +91,12 @@ class Layout extends Component {
                         this.props.fetchRecentlyPlayed({ limit: 12 });
                     })
                     .catch(err => console.log(err));
+            } else {
+                let scope =
+                    'user-read-private user-read-birthdate user-read-email playlist-modify-private playlist-read-private playlist-read-collaborative playlist-modify-public user-follow-modify user-follow-read app-remote-control streaming user-read-currently-playing user-modify-playback-state user-read-playback-state user-library-modify user-library-read user-read-recently-played user-top-read';
+                window.location.replace(
+                    `https://accounts.spotify.com/authorize?client_id=4266b38056c54d47a5480dc099f59cb6&redirect_uri=http://localhost:3000&scope=${scope}&response_type=token`
+                );
             }
         }
     }
@@ -139,8 +104,8 @@ class Layout extends Component {
     logInUserAndGetInfo = newUser => {
         console.log(newUser);
         this.props.setUser(newUser); // set user in redux state
-        if (this.props.location.pathname === "/") {
-            this.props.history.push("/browse/featured"); // if there is no page the user wants to go to
+        if (this.props.location.pathname === '/') {
+            this.props.history.push('/browse/featured'); // if there is no page the user wants to go to
             // then go to the home page
         } else {
             // if there is a page the user wants to go to then just send them there
@@ -166,7 +131,7 @@ class Layout extends Component {
 
     render() {
         let drawer =
-            this.props.width === "lg" ? (
+            this.props.width === 'lg' || this.props.width === 'xl' ? (
                 <Sidedrawer />
             ) : (
                 <Sidedrawer
@@ -183,11 +148,11 @@ class Layout extends Component {
                     <div
                         style={{
                             backgroundImage: this.props.backgroundImage,
-                            width: "100%",
-                            height: "100vh",
-                            backgroundSize: "cover",
-                            backgroundRepeat: "no-repeat",
-                            position: "fixed",
+                            width: '100%',
+                            height: '100vh',
+                            backgroundSize: 'cover',
+                            backgroundRepeat: 'no-repeat',
+                            position: 'fixed',
                             top: 0,
                             left: 0,
                             zIndex: -1000
@@ -202,7 +167,10 @@ class Layout extends Component {
                             lg={12}
                             style={{
                                 paddingLeft:
-                                    this.props.width === "lg" ? 255 : null
+                                    this.props.width === 'lg' ||
+                                    this.props.width === 'xl'
+                                        ? 255
+                                        : null
                             }}
                         >
                             <Switch>
