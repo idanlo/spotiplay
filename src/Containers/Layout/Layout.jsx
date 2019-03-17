@@ -3,13 +3,13 @@ import { Switch, Route, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { SpotifyApiContext } from 'react-spotify-api';
 import styled from 'styled-components';
+import axios from 'axios';
 import * as actionTypes from '../../store/actions/actionTypes';
 import HomePage from '../../Components/HomePage/HomePage';
 import MusicPlayer from '../../Components/MusicPlayer/MusicPlayer';
 import Login from '../../Components/Login/Login';
 import Sidedrawer from '../../Components/Sidedrawer/Sidedrawer';
 import PlaylistView from '../../Components/PlaylistView/PlaylistView';
-import * as SpotifyWebApi from 'spotify-web-api-js';
 import { withWidth, Grid } from '@material-ui/core';
 import Search from '../../Components/Search/Search';
 import NotFound from '../../Components/NotFound/NotFound';
@@ -69,15 +69,16 @@ class Layout extends Component {
         if (this.isOnMobile()) {
             return this.setState({ isOnMobile: true });
         }
-        let spotifyWebApi = new SpotifyWebApi();
         let params = this.getHashParams();
         console.log(params);
         if (!this.props.user) {
             if ('access_token' in params) {
-                spotifyWebApi.setAccessToken(params.access_token);
-
-                spotifyWebApi
-                    .getMe()
+                axios
+                    .get('https://api.spotify.com/v1/me', {
+                        headers: {
+                            Authorization: `Bearer ${params.access_token}`
+                        }
+                    })
                     .then(res => {
                         let newUser = {
                             access_token: params.access_token,
