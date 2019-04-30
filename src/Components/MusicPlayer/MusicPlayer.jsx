@@ -46,7 +46,6 @@ class MusicPlayer extends Component {
     checkForPlayer = () => {
         const token = this.props.user.access_token;
 
-        console.log(window.Spotify);
         if (window.Spotify) {
             clearInterval(this.playerCheckInterval);
             this.player = new window.Spotify.Player({
@@ -81,7 +80,6 @@ class MusicPlayer extends Component {
 
         this.player.on('player_state_changed', state => {
             if (state) {
-                console.log(state);
                 let { duration, position } = state;
                 // duration = 100%
                 // position = ?%
@@ -125,7 +123,6 @@ class MusicPlayer extends Component {
     checkChangePosition = () => {
         this.player.getCurrentState().then(state => {
             if (state && this.state.playing) {
-                console.log('SEEK');
                 let { duration, position } = state;
                 // duration = 100%
                 // position = ?%

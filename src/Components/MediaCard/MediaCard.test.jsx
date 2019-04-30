@@ -1,12 +1,12 @@
-import React from "react";
-import { configure, shallow } from "enzyme";
-import Adapter from "enzyme-adapter-react-16";
-import MediaCard from "./MediaCard";
+import React from 'react';
+import { configure, shallow } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
+import MediaCard from './MediaCard';
 
 configure({ adapter: new Adapter() });
 
-describe("MediaCard", () => {
-    it("should render with the content it received as prop", () => {
+describe('MediaCard', () => {
+    it('should render with the content it received as prop', () => {
         const wrapper = shallow(
             <MediaCard
                 link="/album/1"
@@ -15,10 +15,10 @@ describe("MediaCard", () => {
                 content="Test"
             />
         );
-        expect(wrapper.find("Content").props().children).toEqual("Test");
+        expect(wrapper.find('Content').props().children).toEqual('Test');
     });
 
-    it("should show div on mouse enter", () => {
+    it('should show div on mouse enter', () => {
         const wrapper = shallow(
             <MediaCard
                 link="/album/1"
@@ -27,12 +27,11 @@ describe("MediaCard", () => {
                 content="Test"
             />
         );
-        // console.log(wrapper.debug());
-        wrapper.find("CardMedia").simulate("mouseenter");
-        expect(wrapper.find("CardHover")).toBeTruthy();
+        wrapper.find('CardMedia').simulate('mouseenter');
+        expect(wrapper.find('CardHover')).toBeTruthy();
     });
 
-    it("should should check that the div has no children because it does not have the playSong func (after mouse enter)", () => {
+    it('should should check that the div has no children because it does not have the playSong func (after mouse enter)', () => {
         const wrapper = shallow(
             <MediaCard
                 link="/album/1"
@@ -41,12 +40,11 @@ describe("MediaCard", () => {
                 content="Test"
             />
         );
-        // console.log(wrapper.debug());
-        wrapper.find("CardMedia").simulate("mouseenter");
-        expect(wrapper.find("CardHover").props().children).toBeFalsy();
+        wrapper.find('CardMedia').simulate('mouseenter');
+        expect(wrapper.find('CardHover').props().children).toBeFalsy();
     });
 
-    it("should should check that the div goes away after mouse enter and leave", () => {
+    it('should should check that the div goes away after mouse enter and leave', () => {
         const wrapper = shallow(
             <MediaCard
                 link="/album/1"
@@ -55,12 +53,12 @@ describe("MediaCard", () => {
                 content="Test"
             />
         );
-        wrapper.find("CardMedia").simulate("mouseenter");
-        wrapper.find("CardMedia").simulate("mouseleave");
-        expect(wrapper.contains("CardHover")).toBeFalsy();
+        wrapper.find('CardMedia').simulate('mouseenter');
+        wrapper.find('CardMedia').simulate('mouseleave');
+        expect(wrapper.contains('CardHover')).toBeFalsy();
     });
 
-    it("should have inner play button on mouse enter (only appears when receives playSong func as prop)", () => {
+    it('should have inner play button on mouse enter (only appears when receives playSong func as prop)', () => {
         const playSong = jest.fn();
         const wrapper = shallow(
             <MediaCard
@@ -72,11 +70,11 @@ describe("MediaCard", () => {
             />
         );
 
-        wrapper.find("CardMedia").simulate("mouseenter");
-        expect(wrapper.find("PlayBtn")).toBeTruthy();
+        wrapper.find('CardMedia').simulate('mouseenter');
+        expect(wrapper.find('PlayBtn')).toBeTruthy();
     });
 
-    it("should call playSong func when pressing inner playBtn component (after mouse enter)", () => {
+    it('should call playSong func when pressing inner playBtn component (after mouse enter)', () => {
         const playSong = jest.fn();
         const EventPreventDefault = jest.fn();
         const EventStopPropagation = jest.fn();
@@ -89,8 +87,8 @@ describe("MediaCard", () => {
                 playSong={playSong}
             />
         );
-        wrapper.find("CardMedia").simulate("mouseenter");
-        wrapper.find("PlayBtn").simulate("click", {
+        wrapper.find('CardMedia').simulate('mouseenter');
+        wrapper.find('PlayBtn').simulate('click', {
             preventDefault: EventPreventDefault,
             stopPropagation: EventStopPropagation
         });
