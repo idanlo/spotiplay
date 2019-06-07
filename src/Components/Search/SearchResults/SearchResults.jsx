@@ -12,14 +12,14 @@ import {
 import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import * as actionTypes from '../../../store/actions/actionTypes';
-import { Search } from 'react-spotify-api';
+import { useSearch } from 'react-spotify-api';
 import Navigation from '../../Navigation/Navigation';
 import MediaCard from '../../MediaCard/MediaCard';
 import { TrackDetailsLink } from '../../UI/TrackDetailsLink';
 import { milisToMinutesAndSeconds } from '../../../utils/index';
 
-const SearchResults = props => {
-    console.log('[SearchResults] Update!');
+function SearchResults(props) {
+    const {data} = useSearch(props.match.params.query, {artist: true, track: true, album: true})
     const NavigationItems = [
         {
             link: '/search/results/' + props.match.params.query,
@@ -52,9 +52,7 @@ const SearchResults = props => {
     //     props.results.tracks
     // ) {
     let TopResults = (
-        <Search query={props.match.params.query} artist track album>
-            {data => {
-                return data && data.artists && data.tracks && data.albums ? (
+                data && data.artists && data.tracks && data.albums ? (
                     <Grid container>
                         {data.artists.items.length > 0 &&
                         data.tracks.items.length > 0 ? (
@@ -284,9 +282,11 @@ const SearchResults = props => {
                             </div>
                         ) : null}
                     </Grid>
-                ) : null;
-            }}
-        </Search>
+                ) : null
+            
+       
+
+
     );
     // }
 
