@@ -21,6 +21,7 @@ class HomePage extends Component {
     this.props.setBackgroundImage(
       'linear-gradient(rgb(58, 91, 95), rgb(6, 9, 10) 85%)'
     );
+    document.title = 'React Spotify | Home';
   }
 
   render() {

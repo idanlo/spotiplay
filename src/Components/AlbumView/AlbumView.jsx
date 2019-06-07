@@ -39,6 +39,10 @@ class AlbumView extends Component {
     this.checkIsAlbumSaved();
   }
 
+  changeTitle = albumName => {
+    document.title = 'React Spotify | ' + albumName;
+  };
+
   checkIsAlbumSaved = () => {
     if (this.props.user.access_token && this.props.match.params.id) {
       axios
@@ -108,9 +112,10 @@ class AlbumView extends Component {
                       margin: '30px auto'
                     }}
                     alt="Album"
-                    onLoad={() =>
-                      this.changeBackgroundImageHandler(album.images[0].url)
-                    }
+                    onLoad={() => {
+                      this.changeTitle(album.name);
+                      this.changeBackgroundImageHandler(album.images[0].url);
+                    }}
                   />
                   <Typography variant="h6">{album.name}</Typography>
                   <Typography variant="subtitle1" color="textSecondary">
