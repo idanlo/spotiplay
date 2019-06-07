@@ -12,7 +12,7 @@ import {
 import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import * as actionTypes from '../../../store/actions/actionTypes';
-import { Search, useSearch } from 'react-spotify-api';
+import { Search } from 'react-spotify-api';
 import Navigation from '../../Navigation/Navigation';
 import MediaCard from '../../MediaCard/MediaCard';
 import { TrackDetailsLink } from '../../UI/TrackDetailsLink';
