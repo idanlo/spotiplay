@@ -2,5 +2,14 @@
 
 ## [Demo](https://react-spotify.netlify.com)
 
-![NewReleases](http://prntscr.com/niuqav)
-![AlbumView](http://prntscr.com/niuqqh)
+# New Releases
+
+![NewReleases](https://raw.githubusercontent.com/idanlo/react-spotify/master/images/new_releases.png)
+
+# Album
+
+![AlbumView](https://raw.githubusercontent.com/idanlo/react-spotify/master/images/album_view.png)
+
+# Search
+
+![Search](https://raw.githubusercontent.com/idanlo/react-spotify/master/images/search.png)
