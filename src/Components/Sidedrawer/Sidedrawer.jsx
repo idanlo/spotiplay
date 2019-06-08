@@ -151,7 +151,7 @@ const Sidedrawer = props => {
                         </ListItem>
                     </a>
                     <a
-                        href="https://www.github.com/idanlo/spotify-test-frontend"
+                        href="https://www.github.com/idanlo/react-spotify"
                         target="_blank"
                         rel="noopener noreferrer"
                         style={{ textDecoration: 'none' }}
