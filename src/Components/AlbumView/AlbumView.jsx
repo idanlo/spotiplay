@@ -9,6 +9,7 @@ import {
   Grid,
   Typography,
   Button,
+  Checkbox,
   List,
   ListItem,
   ListItemText,
@@ -16,6 +17,8 @@ import {
 } from '@material-ui/core';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
+import FavoriteIcon from '@material-ui/icons/Favorite'
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder'
 import { TrackDetailsLink } from '../UI/TrackDetailsLink';
 import { milisToMinutesAndSeconds } from '../../utils/index';
 
@@ -60,10 +63,10 @@ class AlbumView extends Component {
     }
   };
 
-  saveAlbum = () => {
-    if (this.props.user.access_token && this.props.match.params.id) {
+  saveAlbum = (doSave) => {
+    if (this.props.user.access_token && this.props.match.params.id) {      
       axios({
-        method: 'PUT',
+        method: doSave ? 'PUT' : 'DELETE',
         url: `https://api.spotify.com/v1/me/albums?ids=${
           this.props.match.params.id
         }`,
@@ -71,7 +74,7 @@ class AlbumView extends Component {
           Authorization: `Bearer ${this.props.user.access_token}`
         }
       }).then(() => {
-        this.setState({ isAlbumSaved: true });
+        this.setState({ isAlbumSaved: doSave });
       });
     }
   };
@@ -127,13 +130,13 @@ class AlbumView extends Component {
                       album.tracks.items.length +
                       ' songs'}
                   </Typography>
-                  <Button
-                    color="primary"
-                    disabled={this.state.isAlbumSaved}
-                    onClick={this.saveAlbum}
-                  >
-                    Save
-                  </Button>
+                  <Checkbox
+                      aria-label={this.state.isAlbumSaved ? "Remove from your Library" : "Save to your Library"}
+                      checked={this.state.isAlbumSaved}
+                      onChange={(e) => this.saveAlbum(e.target.checked)}                                                                            
+                      checkedIcon={<FavoriteIcon />}
+                      icon={<FavoriteBorderIcon />}
+                  />                  
                   <Button
                     color="primary"
                     onClick={() => this.playSongHandler(album)}
