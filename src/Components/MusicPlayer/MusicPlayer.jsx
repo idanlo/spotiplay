@@ -209,33 +209,18 @@ class MusicPlayer extends Component {
     };
 
     saveTrack = (doSave) => {        
-        if (this.props.user.access_token && this.state.playingInfo && this.state.playingInfo.track_window.current_track.id) {
-            if(doSave){
-                axios({
-                    method: 'PUT',
-                    url: `https://api.spotify.com/v1/me/tracks?ids=${
-                        this.state.playingInfo.track_window.current_track.id
-                    }`,
-                    headers: {
-                        Authorization: `Bearer ${this.props.user.access_token}`
-                    }
-                }).then(() => {
-                    this.setState({ isTrackSaved: true });
-                });
-            } else {
-                axios({
-                    method: 'DELETE',
-                    url: `https://api.spotify.com/v1/me/tracks?ids=${
-                        this.state.playingInfo.track_window.current_track.id
-                    }`,
-                    headers: {
-                        Authorization: `Bearer ${this.props.user.access_token}`
-                    }
-                }).then(() => {
-                    this.setState({ isTrackSaved: false });
-                });
-            }
-
+        if (this.props.user.access_token && this.state.playingInfo && this.state.playingInfo.track_window.current_track.id) {            
+            axios({
+                method: doSave ? 'PUT' : 'DELETE',
+                url: `https://api.spotify.com/v1/me/tracks?ids=${
+                    this.state.playingInfo.track_window.current_track.id
+                }`,
+                headers: {
+                    Authorization: `Bearer ${this.props.user.access_token}`
+                }
+            }).then(() => {
+                this.setState({ isTrackSaved: doSave });
+            });
         }
     };
 
