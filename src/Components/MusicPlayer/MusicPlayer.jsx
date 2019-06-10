@@ -1,22 +1,27 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actionTypes from '../../store/actions/actionTypes';
+import axios from 'axios';
 import {
     Grid,
     Typography,
     Card,
     IconButton,
+    Checkbox,
     CardContent,
     CardMedia
 } from '@material-ui/core';
 import SkipNextIcon from '@material-ui/icons/SkipNext';
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import PauseIcon from '@material-ui/icons/Pause';
+import FavoriteIcon from '@material-ui/icons/Favorite'
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder'
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import Slider from '@material-ui/lab/Slider';
 import { TrackDetailsLink } from '../UI/TrackDetailsLink';
 
 class MusicPlayer extends Component {
+
     constructor(props) {
         super(props);
 
@@ -28,7 +33,8 @@ class MusicPlayer extends Component {
             volumeSliderValue: 50,
             positionStamp: '00:00',
             durationStamp: '00:00',
-            player_init_error: false
+            player_init_error: false,
+            isTrackSaved: false
         };
 
         this.player = null;
@@ -41,6 +47,8 @@ class MusicPlayer extends Component {
             () => this.checkForPlayer(),
             1000
         );
+
+        this.checkIsTrackSaved();        
     }
 
     checkForPlayer = () => {
@@ -99,7 +107,8 @@ class MusicPlayer extends Component {
                 ) {
                     let { current_track } = state.track_window;
                     this.props.setCurrentlyPlaying(current_track.name);
-                }
+                    this.checkIsTrackSaved();
+                }                
             }
         });
 
@@ -180,6 +189,39 @@ class MusicPlayer extends Component {
 
     onNextClick = () => {
         this.player.nextTrack();
+    };
+
+    checkIsTrackSaved = () => {
+        if (this.props.user.access_token && this.state.playingInfo && this.state.playingInfo.track_window.current_track.id) {
+            axios
+                .get('https://api.spotify.com/v1/me/tracks/contains', {
+                    params: {
+                        ids: this.state.playingInfo.track_window.current_track.id
+                    },
+                    headers: {
+                        Authorization: `Bearer ${this.props.user.access_token}`
+                    }
+                })
+                .then(res => {
+                    this.setState({ isTrackSaved: res.data[0] });
+                });
+        }
+    };
+
+    saveTrack = (doSave) => {        
+        if (this.props.user.access_token && this.state.playingInfo && this.state.playingInfo.track_window.current_track.id) {            
+            axios({
+                method: doSave ? 'PUT' : 'DELETE',
+                url: `https://api.spotify.com/v1/me/tracks?ids=${
+                    this.state.playingInfo.track_window.current_track.id
+                }`,
+                headers: {
+                    Authorization: `Bearer ${this.props.user.access_token}`
+                }
+            }).then(() => {
+                this.setState({ isTrackSaved: doSave });
+            });
+        }
     };
 
     onSeekSliderChange = (e, val) => {
@@ -266,7 +308,7 @@ class MusicPlayer extends Component {
                                         this.state.playingInfo.track_window
                                             .current_track.name
                                     }
-                                />
+                                />                                
                                 <div
                                     style={{
                                         display: 'flex',
@@ -301,6 +343,13 @@ class MusicPlayer extends Component {
                                             </TrackDetailsLink>
                                         </Typography>
                                     </CardContent>
+                                    <Checkbox
+                                        aria-label={this.state.isTrackSaved ? "Remove from your Favorite Songs" : "Save to your Favorite Songs"}
+                                        checked={this.state.isTrackSaved}
+                                        onChange={(e) => this.saveTrack(e.target.checked)}                                                                            
+                                        checkedIcon={<FavoriteIcon />}
+                                        icon={<FavoriteBorderIcon />}
+                                    />
                                 </div>
                             </Card>
                         </Grid>
