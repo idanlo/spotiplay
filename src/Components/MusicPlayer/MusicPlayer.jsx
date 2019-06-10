@@ -359,7 +359,7 @@ class MusicPlayer extends Component {
                                         </Typography>
                                     </CardContent>
                                     <Checkbox
-                                        aria-label="Save to your Favorite Songs"
+                                        aria-label={this.state.isTrackSaved ? "Remove from your Favorite Songs" : "Save to your Favorite Songs"}
                                         checked={this.state.isTrackSaved}
                                         onChange={(e) => this.saveTrack(e.target.checked)}                                                                            
                                         checkedIcon={<FavoriteIcon />}
