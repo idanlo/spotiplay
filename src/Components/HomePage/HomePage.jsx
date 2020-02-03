@@ -73,7 +73,7 @@ class HomePage extends Component {
           <TypographyHeader>Recently Played</TypographyHeader>
           <Grid
             container
-            spacing={16}
+            spacing={2}
             style={{ margin: 0, width: '100%' }} // inline styles overwrite the material ui styles (no spacing on the left side)
           >
             {recentlyPlayed}
@@ -88,7 +88,7 @@ class HomePage extends Component {
           playlists ? (
             <div>
               <TypographyHeader>{playlists.message}</TypographyHeader>
-              <Grid container spacing={16} style={{ margin: 0, width: '100%' }}>
+              <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
                 {playlists.playlists.items.map(playlist => (
                   <MediaCard
                     key={playlist.id}
@@ -114,7 +114,7 @@ class HomePage extends Component {
     let genres = (
       <div>
         <TypographyHeader>Genres & Moods</TypographyHeader>
-        <Grid container spacing={16} style={{ margin: 0, width: '100%' }}>
+        <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
           <BrowseCategories options={{ limit: 18 }}>
             {categories =>
               categories
@@ -136,7 +136,7 @@ class HomePage extends Component {
     let newReleases = (
       <div>
         <TypographyHeader>New Releases</TypographyHeader>
-        <Grid container spacing={16} style={{ margin: 0, width: '100%' }}>
+        <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
           <BrowseNew options={{ limit: 18 }}>
             {albums =>
               albums

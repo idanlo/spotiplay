@@ -25,7 +25,7 @@ const GenreView = props => {
         genre ? (
           <div>
             <TypographyHeader>{genre.name}</TypographyHeader>
-            <Grid container spacing={16} style={{ margin: 0, width: '100%' }}>
+            <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
               <BrowseCategoryPlaylists id={props.match.params.id} playlists>
                 {playlists =>
                   playlists ? (

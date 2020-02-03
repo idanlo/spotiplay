@@ -48,7 +48,7 @@ function SearchResults(props) {
         data && data.artists && data.tracks && data.albums ? (
           <Grid container>
             {data.artists.items.length > 0 && data.tracks.items.length > 0 ? (
-              <Grid container spacing={16} style={{ margin: 0, width: '100%' }}>
+              <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
                 <MediaCard
                   rounded
                   link={'/artist/' + data.artists.items[0].id}
@@ -151,7 +151,7 @@ function SearchResults(props) {
                 </Typography>
                 <Grid
                   container
-                  spacing={16}
+                  spacing={2}
                   style={{ margin: 0, width: '100%' }}
                 >
                   {data.artists.items.slice(0, 6).map(artist => (
@@ -187,7 +187,7 @@ function SearchResults(props) {
                 </Typography>
                 <Grid
                   container
-                  spacing={16}
+                  spacing={2}
                   style={{ margin: 0, width: '100%' }}
                 >
                   {data.albums.items.slice(0, 6).map(album => (
@@ -224,7 +224,7 @@ function SearchResults(props) {
     <Search query={props.match.params.query} artist>
       {data =>
         data && data.artists ? (
-          <Grid container spacing={16} style={{ margin: 0, width: '100%' }}>
+          <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
             {data.artists.items.map(artist => (
               <MediaCard
                 rounded
@@ -325,7 +325,7 @@ function SearchResults(props) {
     <Search query={props.match.params.query} album>
       {data => {
         return data && data.albums ? (
-          <Grid container spacing={16} style={{ margin: 0, width: '100%' }}>
+          <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
             {data.albums.items.map(album => (
               <MediaCard
                 key={album.id}
@@ -357,7 +357,7 @@ function SearchResults(props) {
     <Search query={props.match.params.query} playlist>
       {data =>
         data && data.playlists ? (
-          <Grid container spacing={16} style={{ margin: 0, width: '100%' }}>
+          <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
             {data.playlists.items.map(playlist => (
               <MediaCard
                 key={playlist.id}
@@ -421,8 +421,5 @@ const mapDispatchToProps = dispatch => {
 };
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(SearchResults)
+  connect(mapStateToProps, mapDispatchToProps)(SearchResults)
 );

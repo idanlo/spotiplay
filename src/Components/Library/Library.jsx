@@ -38,7 +38,7 @@ const Library = props => {
     <UserPlaylists>
       {playlists =>
         playlists ? (
-          <Grid container spacing={16} style={{ margin: 0, width: '100%' }}>
+          <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
             {playlists.items.map(playlist => (
               <MediaCard
                 key={playlist.id}
@@ -64,7 +64,7 @@ const Library = props => {
     <UserAlbums>
       {albums =>
         albums ? (
-          <Grid container spacing={16} style={{ margin: 0, width: '100%' }}>
+          <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
             {albums.items.map(album => (
               <MediaCard
                 key={album.album.id}

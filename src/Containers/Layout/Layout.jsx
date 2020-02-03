@@ -91,30 +91,29 @@ class Layout extends Component {
               Authorization: `Bearer ${params.access_token}`
             }
           })
-          .then(res => {
+          .then(({ data }) => {
             let newUser = {
               access_token: params.access_token,
-              displayName: res.display_name,
-              email: res.email,
-              id: res.id,
-              type: res.type,
-              country: res.country
+              displayName: data.display_name,
+              email: data.email,
+              id: data.id,
+              type: data.type,
+              country: data.country,
+              product: data.product
             };
+            console.log('XDDD', data);
             this.logInUserAndGetInfo(newUser);
             this.props.fetchRecentlyPlayed({ limit: 12 });
           })
           .catch(err => console.log(err));
       } else {
-        window.location = `https://accounts.spotify.com/authorize?client_id=${
-          process.env.REACT_APP_SPOTIFY_CLIENT_ID
-        }&redirect_uri=${process.env.REACT_APP_SPOTIFY_REDIRECT_URI}&scope=${
-          process.env.REACT_APP_SPOTIFY_SCOPE
-        }&response_type=token`;
+        window.location = `https://accounts.spotify.com/authorize?client_id=${process.env.REACT_APP_SPOTIFY_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_SPOTIFY_REDIRECT_URI}&scope=${process.env.REACT_APP_SPOTIFY_SCOPE}&response_type=token`;
       }
     }
   }
 
   logInUserAndGetInfo = newUser => {
+    console.log('LOG IN', newUser);
     this.props.setUser(newUser); // set user in redux state
     if (this.props.location.pathname === '/') {
       this.props.history.push('/browse/featured'); // if there is no page the user wants to go to
