@@ -64,9 +64,7 @@ class AlbumView extends Component {
     if (this.props.user.access_token && this.props.match.params.id) {
       axios({
         method: 'PUT',
-        url: `https://api.spotify.com/v1/me/albums?ids=${
-          this.props.match.params.id
-        }`,
+        url: `https://api.spotify.com/v1/me/albums?ids=${this.props.match.params.id}`,
         headers: {
           Authorization: `Bearer ${this.props.user.access_token}`
         }
@@ -119,8 +117,16 @@ class AlbumView extends Component {
                   />
                   <Typography variant="h6">{album.name}</Typography>
                   <Typography variant="subtitle1" color="textSecondary">
-                    {album.artists.map(artist => artist.name).join(', ')}
+                    {album.artists.map((artist, index) => (
+                      <React.Fragment key={artist.id}>
+                        <TrackDetailsLink to={'/artist/' + artist.id}>
+                          {artist.name}
+                        </TrackDetailsLink>
+                        {index !== album.artists.length - 1 ? ', ' : null}
+                      </React.Fragment>
+                    ))}
                   </Typography>
+
                   <Typography variant="subtitle1" color="textSecondary">
                     {album.release_date.substring(0, 4) +
                       ' • ' +
@@ -232,8 +238,5 @@ const mapDispatchToProps = dispatch => {
 };
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(AlbumView)
+  connect(mapStateToProps, mapDispatchToProps)(AlbumView)
 );
