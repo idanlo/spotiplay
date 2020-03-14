@@ -17,6 +17,7 @@ import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 // import Slider from '@material-ui/lab/Slider';
 import { TrackDetailsLink } from '../UI/TrackDetailsLink';
+import { logger } from '../../utils';
 
 class MusicPlayer extends Component {
   constructor(props) {
@@ -43,7 +44,7 @@ class MusicPlayer extends Component {
   }
 
   // componentDidUpdate(prevProps) {
-  //   console.log('UPdate', prevProps, this.props);
+  //   logger.log('UPdate', prevProps, this.props);
   //   if (prevProps.user.product !== this.props.user.product) {
   //     this.transferPlaybackHere();
   //   }
@@ -82,6 +83,7 @@ class MusicPlayer extends Component {
 
     this.player.on('player_state_changed', state => {
       if (state) {
+        logger.log('player state changed', state);
         let { duration, position } = state;
         // duration = 100%
         // position = ?%
@@ -91,9 +93,23 @@ class MusicPlayer extends Component {
           playing: !state.paused,
           positionSliderValue: val
         });
+
+        // Music started playing, start the position interval
+        if (!this.props.isPlaying && !state.paused) {
+          this.positionCheckInterval = setInterval(() => {
+            this.checkChangePosition();
+          }, 1000);
+        }
+
+        // Music stopped playing, clear the position interval
+        if (this.props.isPlaying && state.paused) {
+          clearInterval(this.positionCheckInterval);
+        }
+
         if (this.props.isPlaying === state.paused) {
           this.props.setIsPlaying(!state.paused);
         }
+
         if (
           !this.props.currentlyPlaying ||
           this.props.currentlyPlaying !== state.track_window.current_track.name
@@ -106,7 +122,7 @@ class MusicPlayer extends Component {
 
     this.player.on('ready', data => {
       let { device_id } = data;
-      console.log('PLAYER CONNECTED ', device_id);
+      logger.log('PLAYER CONNECTED ', device_id);
       // await this.setState({ deviceId: device_id });
       this.setState({ deviceId: device_id }, () => {
         this.transferPlaybackHere();
@@ -115,15 +131,12 @@ class MusicPlayer extends Component {
         let volume = vol * 100;
         this.setState({ volumeSliderValue: volume });
       });
-      this.positionCheckInterval = setInterval(() => {
-        this.checkChangePosition();
-      }, 1000);
     });
   };
 
   checkChangePosition = () => {
     this.player.getCurrentState().then(state => {
-      if (state && this.state.playing) {
+      if (state) {
         let { duration, position } = state;
         // duration = 100%
         // position = ?%
@@ -158,7 +171,7 @@ class MusicPlayer extends Component {
       })
     })
       .then(res => {
-        console.log('status', res.status);
+        logger.log('status', res.status);
         if (res.status === 204) {
           axios
             .get('https://api.spotify.com/v1/me/player', {
@@ -166,20 +179,21 @@ class MusicPlayer extends Component {
                 Authorization: `Bearer ${this.props.user.access_token}`
               }
             })
-            .then(s => {
-              console.log('spotify player state', s);
+            .then(() => {
+              // Transferred playback successfully, get current timestamp
+              this.checkChangePosition();
             })
             .catch(err => {
-              console.log(err);
+              logger.log(err);
             });
         }
       })
       .catch(e => console.error(e));
 
-    // console.log('Hello', this.props);
+    // logger.log('Hello', this.props);
     // if (this.props.user.product === 'premium') {
     // } else {
-    //   console.log(
+    //   logger.log(
     //     'Cannot transfer playback automatically because you are not a premium user.'
     //   );
     // }
@@ -204,7 +218,7 @@ class MusicPlayer extends Component {
     let seek = Math.floor((val * dur) / 100); // round number
     this.setState({ positionSliderValue: val });
     this.player.seek(seek).then(() => {
-      console.log(`Seek song to ${seek} ms`);
+      logger.log(`Seek song to ${seek} ms`);
     });
   };
 
