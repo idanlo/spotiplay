@@ -10,13 +10,14 @@ import MusicPlayer from '../../Components/MusicPlayer/MusicPlayer';
 import Login from '../../Components/Login/Login';
 import Sidedrawer from '../../Components/Sidedrawer/Sidedrawer';
 import PlaylistView from '../../Components/PlaylistView/PlaylistView';
-import { withWidth, Grid } from '@material-ui/core';
+import { withWidth, Grid, CircularProgress } from '@material-ui/core';
 import Search from '../../Components/Search/Search';
 import NotFound from '../../Components/NotFound/NotFound';
 import AlbumView from '../../Components/AlbumView/AlbumView';
 import Library from '../../Components/Library/Library';
 import ArtistView from '../../Components/ArtistView/ArtistView';
 import GenreView from '../../Components/GenreView/GenreView';
+import { logger } from '../../utils';
 
 // const Search = React.lazy(() => import('../../Components/Search/Search'));
 // const NotFound = React.lazy(() => import('../../Components/NotFound/NotFound'));
@@ -30,6 +31,16 @@ import GenreView from '../../Components/GenreView/GenreView';
 // const GenreView = React.lazy(() =>
 //     import('../../Components/GenreView/GenreView')
 // );
+
+class ErrorBoundary extends React.Component {
+  componentDidCatch(err, errInfo) {
+    logger.log('[ErrorBoundary]', err, errInfo);
+  }
+
+  render() {
+    return this.props.children;
+  }
+}
 
 const GridSidedrawer = styled(Grid)`
   position: fixed;
@@ -58,62 +69,115 @@ const Background = styled.div`
 class Layout extends Component {
   state = {
     sideDrawerOpen: false,
-    isOnMobile: false
-  };
-
-  isOnMobile = () => {
-    var check = false;
-    (function(a) {
-      if (
-        /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(
-          a
-        ) ||
-        /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw(n|u)|c55\/|capi|ccwa|cdm|cell|chtm|cldc|cmd|co(mp|nd)|craw|da(it|ll|ng)|dbte|dcs|devi|dica|dmob|do(c|p)o|ds(12|d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(|_)|g1 u|g560|gene|gf5|gmo|go(\.w|od)|gr(ad|un)|haie|hcit|hd(m|p|t)|hei|hi(pt|ta)|hp( i|ip)|hsc|ht(c(| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i(20|go|ma)|i230|iac( ||\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|[a-w])|libw|lynx|m1w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|mcr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|([1-8]|c))|phil|pire|pl(ay|uc)|pn2|po(ck|rt|se)|prox|psio|ptg|qaa|qc(07|12|21|32|60|[2-7]|i)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h|oo|p)|sdk\/|se(c(|0|1)|47|mc|nd|ri)|sgh|shar|sie(|m)|sk0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h|v|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl|tdg|tel(i|m)|tim|tmo|to(pl|sh)|ts(70|m|m3|m5)|tx9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas|your|zeto|zte/i.test(
-          a.substr(0, 4)
-        )
-      )
-        check = true;
-    })(navigator.userAgent || navigator.vendor || window.opera);
-    return check;
+    loading: true
   };
 
   componentDidMount() {
-    // if (this.isOnMobile()) {
-    //     this.setState({ isOnMobile: true });
-    // }
     let params = this.getHashParams();
-    console.log(params);
-    if (!this.props.user) {
-      if ('access_token' in params) {
-        axios
-          .get('https://api.spotify.com/v1/me', {
-            headers: {
-              Authorization: `Bearer ${params.access_token}`
-            }
-          })
-          .then(({ data }) => {
-            let newUser = {
-              access_token: params.access_token,
-              displayName: data.display_name,
-              email: data.email,
-              id: data.id,
-              type: data.type,
-              country: data.country,
-              product: data.product
-            };
-            console.log('XDDD', data);
-            this.logInUserAndGetInfo(newUser);
-            this.props.fetchRecentlyPlayed({ limit: 12 });
-          })
-          .catch(err => console.log(err));
-      } else {
-        window.location = `https://accounts.spotify.com/authorize?client_id=${process.env.REACT_APP_SPOTIFY_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_SPOTIFY_REDIRECT_URI}&scope=${process.env.REACT_APP_SPOTIFY_SCOPE}&response_type=token`;
+    logger.log('Params', params);
+    // If access token doesn't exist in has params, try to take it from local storage
+    if (!('access_token' in params)) {
+      const currentAccessToken = localStorage.getItem(
+        'react-spotify-access-token'
+      );
+
+      if (currentAccessToken) {
+        params.access_token = currentAccessToken;
       }
+    }
+    logger.log('Params after', params);
+    if ('access_token' in params) {
+      axios
+        .get('https://api.spotify.com/v1/me', {
+          headers: {
+            Authorization: `Bearer ${params.access_token}`
+          }
+        })
+        .then(({ data }) => {
+          localStorage.setItem(
+            'react-spotify-access-token',
+            params.access_token
+          );
+          if (params.refresh_token) {
+            localStorage.setItem(
+              'react-spotify-refresh-token',
+              params.refresh_token
+            );
+          }
+          let newUser = {
+            access_token: params.access_token,
+            displayName: data.display_name,
+            email: data.email,
+            id: data.id,
+            type: data.type,
+            country: data.country,
+            product: data.product
+          };
+          this.setState({ loading: false });
+          this.logInUserAndGetInfo(newUser);
+          this.props.fetchRecentlyPlayed({ limit: 12 });
+        })
+        .catch(err => {
+          // 401 = Unauthorized - the access token is incorrect (expired)
+          if (err.response.status === 401) {
+            // Check if refresh token exists
+            const refreshToken = localStorage.getItem(
+              'react-spotify-refresh-token'
+            );
+            if (refreshToken) {
+              // Send refresh token to server to acquire a new access token
+              axios
+                .post('https://spotiplay-backend.herokuapp.com/refresh', {
+                  data: JSON.stringify({
+                    refresh_token: refreshToken
+                  })
+                })
+                .then(res => {
+                  logger.log('Refresh token response -', res.data);
+                  axios
+                    .get('https://api.spotify.com/v1/me', {
+                      headers: {
+                        Authorization: `Bearer ${res.data.access_token}`
+                      }
+                    })
+                    .then(({ data }) => {
+                      localStorage.setItem(
+                        'react-spotify-access-token',
+                        res.data.access_token
+                      );
+
+                      let newUser = {
+                        access_token: res.data.access_token,
+                        displayName: data.display_name,
+                        email: data.email,
+                        id: data.id,
+                        type: data.type,
+                        country: data.country,
+                        product: data.product
+                      };
+                      this.logInUserAndGetInfo(newUser);
+                      this.props.fetchRecentlyPlayed({ limit: 12 });
+                    });
+                })
+                .catch(e => {
+                  logger.log('Refresh token error -', e);
+                })
+                .finally(() => {
+                  this.setState({ loading: false });
+                });
+            } else {
+              // Refresh token doesn't exist, the user is shown a 'login with Spotify button'
+              this.setState({ loading: false });
+            }
+          }
+        });
+    } else {
+      // The user is shown a 'login with Spotify button'
     }
   }
 
   logInUserAndGetInfo = newUser => {
-    console.log('LOG IN', newUser);
+    logger.log('LOG IN', newUser);
     this.props.setUser(newUser); // set user in redux state
     if (this.props.location.pathname === '/') {
       this.props.history.push('/browse/featured'); // if there is no page the user wants to go to
@@ -151,8 +215,20 @@ class Layout extends Component {
         />
       );
 
-    return this.props.user ? (
-      <React.Fragment>
+    return this.state.loading ? (
+      <Grid
+        container
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '100vh'
+        }}
+      >
+        <CircularProgress />
+      </Grid>
+    ) : this.props.user ? (
+      <ErrorBoundary>
         <SpotifyApiContext.Provider value={this.props.user.access_token}>
           <Background background={this.props.backgroundImage} />
           <Grid container>
@@ -188,7 +264,7 @@ class Layout extends Component {
           </Grid>
           <MusicPlayer />
         </SpotifyApiContext.Provider>
-      </React.Fragment>
+      </ErrorBoundary>
     ) : (
       <Switch>
         <Route component={Login} />
@@ -213,8 +289,5 @@ const mapDispatchToProps = dispatch => {
 };
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(withWidth()(Layout))
+  connect(mapStateToProps, mapDispatchToProps)(withWidth()(Layout))
 );
