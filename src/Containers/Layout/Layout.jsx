@@ -173,6 +173,7 @@ class Layout extends Component {
         });
     } else {
       // The user is shown a 'login with Spotify button'
+      this.setState({ loading: false });
     }
   }
 
