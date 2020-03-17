@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Switch, Route, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { SpotifyApiContext } from 'react-spotify-api';
+import { SpotifyApiContext, SpotifyApiAxiosContext } from 'react-spotify-api';
 import styled from 'styled-components';
 import axios from 'axios';
 import * as actionTypes from '../../store/actions/actionTypes';
@@ -31,16 +31,6 @@ import { logger } from '../../utils';
 // const GenreView = React.lazy(() =>
 //     import('../../Components/GenreView/GenreView')
 // );
-
-class ErrorBoundary extends React.Component {
-  componentDidCatch(err, errInfo) {
-    logger.log('[ErrorBoundary]', err, errInfo);
-  }
-
-  render() {
-    return this.props.children;
-  }
-}
 
 const GridSidedrawer = styled(Grid)`
   position: fixed;
@@ -73,6 +63,48 @@ class Layout extends Component {
   };
 
   componentDidMount() {
+    axios.interceptors.response.use(
+      response => {
+        return response;
+      },
+      function(error) {
+        const originalRequest = error.config;
+        if (error.response.status === 401 && !originalRequest._retry) {
+          originalRequest._retry = true;
+          logger.log('Error happened');
+          logger.log(error);
+          return window.location.reload();
+          return axios
+            .post('https://spotiplay-backend.herokuapp.com/refresh', {
+              data: JSON.stringify({
+                refresh_token: localStorage.getItem(
+                  'react-spotify-refresh-token'
+                )
+              })
+            })
+            .then(res => {
+              if (res.status === 200) {
+                // 1) put token to LocalStorage
+                localStorage.setItem(
+                  'react-spotify-access-token',
+                  res.data.access_token
+                );
+                logger.log('New token', res.data);
+                logger.log(originalRequest);
+                this.props.setUser({ access_token: res.data.access_token });
+
+                // // 2) Change Authorization header
+                // axios.defaults.headers.common['Authorization'] =
+                //   'Bearer ' + localStorageService.getAccessToken();
+
+                // 3) return originalRequest object with Axios.
+                return axios(originalRequest);
+              }
+            });
+        }
+      }
+    );
+
     let params = this.getHashParams();
     logger.log('Params', params);
     // If access token doesn't exist in has params, try to take it from local storage
@@ -113,6 +145,7 @@ class Layout extends Component {
             country: data.country,
             product: data.product
           };
+          logger.log(this.props.setUser);
           this.setState({ loading: false });
           this.logInUserAndGetInfo(newUser);
           this.props.fetchRecentlyPlayed({ limit: 12 });
@@ -229,7 +262,7 @@ class Layout extends Component {
         <CircularProgress />
       </Grid>
     ) : this.props.user ? (
-      <ErrorBoundary>
+      <SpotifyApiAxiosContext.Provider value={axios}>
         <SpotifyApiContext.Provider value={this.props.user.access_token}>
           <Background background={this.props.backgroundImage} />
           <Grid container>
@@ -265,7 +298,7 @@ class Layout extends Component {
           </Grid>
           <MusicPlayer />
         </SpotifyApiContext.Provider>
-      </ErrorBoundary>
+      </SpotifyApiAxiosContext.Provider>
     ) : (
       <Switch>
         <Route component={Login} />
