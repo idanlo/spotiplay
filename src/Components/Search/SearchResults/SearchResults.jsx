@@ -50,10 +50,7 @@ function SearchResults(props) {
     },
   ];
 
-  const { data, loading, error } = useSearch(
-    props.match.params.query,
-    searchOpts
-  );
+  const { data, loading } = useSearch(props.match.params.query, searchOpts);
 
   let TopResults =
     data && data.artists && data.tracks && data.albums ? (

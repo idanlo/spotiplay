@@ -11,7 +11,7 @@ import {
   Avatar,
   ListItem,
   ListItemText,
-  ListItemIcon
+  ListItemIcon,
 } from '@material-ui/core';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
@@ -22,15 +22,15 @@ class ArtistView extends Component {
       let uris;
       if (track.type === 'artist') {
         uris = JSON.stringify({
-          context_uri: track.uri
+          context_uri: track.uri,
         });
       } else {
         // track.type === "track"
         uris = JSON.stringify({
           context_uri: track.album.uri,
           offset: {
-            uri: track.uri
-          }
+            uri: track.uri,
+          },
         });
       }
       this.props.playSong(uris);
@@ -44,7 +44,7 @@ class ArtistView extends Component {
   render() {
     let ArtistHeader = (
       <Artist id={this.props.match.params.id}>
-        {artist =>
+        {({ data: artist }) =>
           artist ? (
             <Grid
               item
@@ -59,7 +59,7 @@ class ArtistView extends Component {
                     margin: '0 auto',
                     width: 300,
                     height: 300,
-                    marginBottom: 10
+                    marginBottom: 10,
                   }}
                 />
                 <Typography variant="h6">{artist.name}</Typography>
@@ -78,7 +78,7 @@ class ArtistView extends Component {
 
     let ArtistTopTracksList = (
       <ArtistTracks id={this.props.match.params.id}>
-        {tracks =>
+        {({ data: tracks }) =>
           tracks ? (
             <List style={{ width: '100%' }}>
               {tracks.tracks.map(track => (
@@ -117,20 +117,17 @@ const mapStateToProps = state => {
   return {
     user: state.current_user,
     currentlyPlaying: state.currently_playing,
-    isPlaying: state.isPlaying
+    isPlaying: state.isPlaying,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     playSong: uris => dispatch(actionTypes.playSong(uris)),
-    pauseSong: () => dispatch(actionTypes.pauseSong())
+    pauseSong: () => dispatch(actionTypes.pauseSong()),
   };
 };
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ArtistView)
+  connect(mapStateToProps, mapDispatchToProps)(ArtistView)
 );

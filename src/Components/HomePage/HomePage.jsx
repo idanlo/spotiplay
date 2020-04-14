@@ -11,7 +11,7 @@ import styled from 'styled-components';
 const TypographyHeader = styled(Typography).attrs({
   variant: 'h3',
   align: 'center',
-  color: 'secondary'
+  color: 'secondary',
 })`
   padding: 10px;
 `;
@@ -28,20 +28,20 @@ class HomePage extends Component {
     const NavigationItems = [
       {
         link: '/browse/featured',
-        text: 'Featured'
+        text: 'Featured',
       },
       {
         link: '/browse/genres',
-        text: 'Genres & Moods'
+        text: 'Genres & Moods',
       },
       {
         link: '/browse/new',
-        text: 'New Releases'
+        text: 'New Releases',
       },
       {
         link: '/browse/discover',
-        text: 'Discover'
-      }
+        text: 'Discover',
+      },
     ];
 
     let recentlyPlayed = null;
@@ -59,8 +59,8 @@ class HomePage extends Component {
                 JSON.stringify({
                   context_uri: track.track.album.uri,
                   offset: {
-                    uri: track.track.uri
-                  }
+                    uri: track.track.uri,
+                  },
                 })
               )
             }
@@ -84,7 +84,7 @@ class HomePage extends Component {
 
     let featuredPlaylists = (
       <BrowseFeatured options={{ limit: 12 }}>
-        {playlists =>
+        {({ data: playlists }) =>
           playlists ? (
             <div>
               <TypographyHeader>{playlists.message}</TypographyHeader>
@@ -98,7 +98,7 @@ class HomePage extends Component {
                     playSong={() =>
                       this.props.playSong(
                         JSON.stringify({
-                          context_uri: playlist.uri
+                          context_uri: playlist.uri,
                         })
                       )
                     }
@@ -116,7 +116,7 @@ class HomePage extends Component {
         <TypographyHeader>Genres & Moods</TypographyHeader>
         <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
           <BrowseCategories options={{ limit: 18 }}>
-            {categories =>
+            {({ data: categories }) =>
               categories
                 ? categories.categories.items.map(genre => (
                     <MediaCard
@@ -138,7 +138,7 @@ class HomePage extends Component {
         <TypographyHeader>New Releases</TypographyHeader>
         <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
           <BrowseNew options={{ limit: 18 }}>
-            {albums =>
+            {({ data: albums }) =>
               albums
                 ? albums.albums.items.map(album => (
                     <MediaCard
@@ -149,7 +149,7 @@ class HomePage extends Component {
                       playSong={() =>
                         this.props.playSong(
                           JSON.stringify({
-                            context_uri: album.uri
+                            context_uri: album.uri,
                           })
                         )
                       }
@@ -188,7 +188,7 @@ class HomePage extends Component {
 const mapStateToProps = state => {
   return {
     user: state.current_user,
-    recently_played: state.recently_played
+    recently_played: state.recently_played,
   };
 };
 
@@ -197,13 +197,10 @@ const mapDispatchToProps = dispatch => {
     setBackgroundImage: backgroundImage =>
       dispatch({
         type: actionTypes.SET_BACKGROUND_IMAGE,
-        backgroundImage
+        backgroundImage,
       }),
-    playSong: uris => dispatch(actionTypes.playSong(uris))
+    playSong: uris => dispatch(actionTypes.playSong(uris)),
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(HomePage);
+export default connect(mapStateToProps, mapDispatchToProps)(HomePage);

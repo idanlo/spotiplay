@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import * as actionTypes from '../../store/actions/actionTypes';
 import { connect } from 'react-redux';
 import axios from 'axios';
-import { Album } from 'react-spotify-api';
+import { Album, AlbumTracks } from 'react-spotify-api';
 import Vibrant from 'node-vibrant';
 import {
   Grid,
@@ -12,16 +12,17 @@ import {
   List,
   ListItem,
   ListItemText,
-  ListItemIcon
+  ListItemIcon,
 } from '@material-ui/core';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
+import Infinite from 'react-infinite';
 import { TrackDetailsLink } from '../UI/TrackDetailsLink';
 import { milisToMinutesAndSeconds } from '../../utils/index';
 
 class AlbumView extends Component {
   state = {
-    isAlbumSaved: false
+    isAlbumSaved: false,
   };
 
   changeBackgroundImageHandler = img => {
@@ -48,11 +49,11 @@ class AlbumView extends Component {
       axios
         .get('https://api.spotify.com/v1/me/albums/contains', {
           params: {
-            ids: this.props.match.params.id
+            ids: this.props.match.params.id,
           },
           headers: {
-            Authorization: `Bearer ${this.props.user.access_token}`
-          }
+            Authorization: `Bearer ${this.props.user.access_token}`,
+          },
         })
         .then(res => {
           this.setState({ isAlbumSaved: res.data[0] });
@@ -66,8 +67,8 @@ class AlbumView extends Component {
         method: 'PUT',
         url: `https://api.spotify.com/v1/me/albums?ids=${this.props.match.params.id}`,
         headers: {
-          Authorization: `Bearer ${this.props.user.access_token}`
-        }
+          Authorization: `Bearer ${this.props.user.access_token}`,
+        },
       }).then(() => {
         this.setState({ isAlbumSaved: true });
       });
@@ -79,14 +80,14 @@ class AlbumView extends Component {
       let uris;
       if (track.type === 'album') {
         uris = JSON.stringify({
-          context_uri: track.uri
+          context_uri: track.uri,
         });
       } else {
         uris = JSON.stringify({
           context_uri: album.uri,
           offset: {
-            uri: track.uri
-          }
+            uri: track.uri,
+          },
         });
       }
       this.props.playSong(uris);
@@ -96,119 +97,146 @@ class AlbumView extends Component {
   render() {
     let mainContent = (
       <Album id={this.props.match.params.id}>
-        {album =>
+        {({ data: album }) =>
           album ? (
-            <Grid container>
-              <Grid item xs={12} md={4}>
-                <div style={{ textAlign: 'center' }}>
-                  <img
-                    src={album.images[0].url}
-                    style={{
-                      width: '70%',
-                      height: '70%',
-                      display: 'block',
-                      margin: '30px auto'
-                    }}
-                    alt="Album"
-                    onLoad={() => {
-                      this.changeTitle(album.name);
-                      this.changeBackgroundImageHandler(album.images[0].url);
-                    }}
-                  />
-                  <Typography variant="h6">{album.name}</Typography>
-                  <Typography variant="subtitle1" color="textSecondary">
-                    {album.artists.map((artist, index) => (
-                      <React.Fragment key={artist.id}>
-                        <TrackDetailsLink to={'/artist/' + artist.id}>
-                          {artist.name}
-                        </TrackDetailsLink>
-                        {index !== album.artists.length - 1 ? ', ' : null}
-                      </React.Fragment>
-                    ))}
-                  </Typography>
-
-                  <Typography variant="subtitle1" color="textSecondary">
-                    {album.release_date.substring(0, 4) +
-                      ' • ' +
-                      album.tracks.items.length +
-                      ' songs'}
-                  </Typography>
-                  <Button
-                    color="primary"
-                    disabled={this.state.isAlbumSaved}
-                    onClick={this.saveAlbum}
-                  >
-                    Save
-                  </Button>
-                  <Button
-                    color="primary"
-                    onClick={() => this.playSongHandler(album)}
-                  >
-                    Play
-                  </Button>
-                </div>
-              </Grid>
-              <Grid item xs={12} md={8}>
-                <List style={{ width: '100%' }}>
-                  {album.tracks.items.map(track => {
-                    const ArtistAlbumLink = (
-                      <React.Fragment>
-                        {track.artists.map((artist, index) => (
-                          <React.Fragment key={artist.id}>
-                            <TrackDetailsLink to={'/artist/' + artist.id}>
-                              {artist.name}
-                            </TrackDetailsLink>
-                            {index !== track.artists.length - 1 ? ', ' : null}
-                          </React.Fragment>
-                        ))}
-                        <span> • </span>
-                        <TrackDetailsLink to={'/album/' + album.id}>
-                          {album.name}
-                        </TrackDetailsLink>
-                      </React.Fragment>
-                    );
-                    return (
-                      <ListItem
-                        key={track.id}
-                        style={
-                          this.props.currentlyPlaying === track.name &&
-                          this.props.isPlaying
-                            ? {
-                                background: '#1db954'
-                              }
-                            : null
-                        }
-                      >
-                        <ListItemIcon
+            <AlbumTracks id={this.props.match.params.id}>
+              {({ data: tracks, loadMoreData }) =>
+                tracks ? (
+                  <Grid container>
+                    <Grid item xs={12} md={4}>
+                      <div style={{ textAlign: 'center' }}>
+                        <img
+                          src={album.images[0].url}
                           style={{
-                            cursor: 'pointer'
+                            width: '70%',
+                            height: '70%',
+                            display: 'block',
+                            margin: '30px auto',
+                          }}
+                          alt="Album"
+                          onLoad={() => {
+                            this.changeTitle(album.name);
+                            this.changeBackgroundImageHandler(
+                              album.images[0].url
+                            );
+                          }}
+                        />
+                        <Typography variant="h6">{album.name}</Typography>
+                        <Typography variant="subtitle1" color="textSecondary">
+                          {album.artists.map((artist, index) => (
+                            <React.Fragment key={artist.id}>
+                              <TrackDetailsLink to={'/artist/' + artist.id}>
+                                {artist.name}
+                              </TrackDetailsLink>
+                              {index !== album.artists.length - 1 ? ', ' : null}
+                            </React.Fragment>
+                          ))}
+                        </Typography>
+
+                        <Typography variant="subtitle1" color="textSecondary">
+                          {album.release_date.substring(0, 4) +
+                            ' • ' +
+                            tracks.items.length +
+                            ' songs'}
+                        </Typography>
+                        <Button
+                          color="primary"
+                          disabled={this.state.isAlbumSaved}
+                          onClick={this.saveAlbum}
+                        >
+                          Save
+                        </Button>
+                        <Button
+                          color="primary"
+                          onClick={() => this.playSongHandler(album)}
+                        >
+                          Play
+                        </Button>
+                      </div>
+                    </Grid>
+                    <Grid item xs={12} md={8}>
+                      <List style={{ width: '100%' }}>
+                        <Infinite
+                          useWindowAsScrollContainer
+                          elementHeight={72}
+                          infiniteLoadBeginEdgeOffset={150}
+                          onInfiniteLoad={() => {
+                            if (tracks.items.length < tracks.total) {
+                              loadMoreData();
+                            }
                           }}
                         >
-                          {this.props.currentlyPlaying === track.name &&
-                          this.props.isPlaying ? (
-                            <PauseIcon onClick={this.props.pauseSong} />
-                          ) : (
-                            <PlayArrowIcon
-                              onClick={() => this.playSongHandler(track, album)}
-                            />
-                          )}
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={track.name}
-                          secondary={ArtistAlbumLink}
-                        />
-                        <ListItemText
-                          style={{
-                            textAlign: 'right'
-                          }}
-                          primary={milisToMinutesAndSeconds(track.duration_ms)}
-                        />
-                      </ListItem>
-                    );
-                  })}
-                </List>
-              </Grid>
-            </Grid>
+                          {tracks.items.map(track => {
+                            const ArtistAlbumLink = (
+                              <React.Fragment>
+                                {track.artists.map((artist, index) => (
+                                  <React.Fragment key={artist.id}>
+                                    <TrackDetailsLink
+                                      to={'/artist/' + artist.id}
+                                    >
+                                      {artist.name}
+                                    </TrackDetailsLink>
+                                    {index !== track.artists.length - 1
+                                      ? ', '
+                                      : null}
+                                  </React.Fragment>
+                                ))}
+                                <span> • </span>
+                                <TrackDetailsLink to={'/album/' + album.id}>
+                                  {album.name}
+                                </TrackDetailsLink>
+                              </React.Fragment>
+                            );
+                            return (
+                              <ListItem
+                                key={track.id}
+                                style={
+                                  this.props.currentlyPlaying === track.name &&
+                                  this.props.isPlaying
+                                    ? {
+                                        background: '#1db954',
+                                      }
+                                    : null
+                                }
+                              >
+                                <ListItemIcon
+                                  style={{
+                                    cursor: 'pointer',
+                                  }}
+                                >
+                                  {this.props.currentlyPlaying === track.name &&
+                                  this.props.isPlaying ? (
+                                    <PauseIcon onClick={this.props.pauseSong} />
+                                  ) : (
+                                    <PlayArrowIcon
+                                      onClick={() =>
+                                        this.playSongHandler(track, album)
+                                      }
+                                    />
+                                  )}
+                                </ListItemIcon>
+                                <ListItemText
+                                  primary={track.name}
+                                  secondary={ArtistAlbumLink}
+                                />
+                                <ListItemText
+                                  style={{
+                                    textAlign: 'right',
+                                  }}
+                                  primary={milisToMinutesAndSeconds(
+                                    track.duration_ms
+                                  )}
+                                />
+                              </ListItem>
+                            );
+                          })}
+                        </Infinite>
+                      </List>
+                    </Grid>
+                  </Grid>
+                ) : null
+              }
+            </AlbumTracks>
           ) : null
         }
       </Album>
@@ -221,7 +249,7 @@ const mapStateToProps = state => {
   return {
     currentlyPlaying: state.currently_playing,
     isPlaying: state.isPlaying,
-    user: state.current_user
+    user: state.current_user,
   };
 };
 
@@ -231,9 +259,9 @@ const mapDispatchToProps = dispatch => {
     setBackgroundImage: backgroundImage =>
       dispatch({
         type: actionTypes.SET_BACKGROUND_IMAGE,
-        backgroundImage
+        backgroundImage,
       }),
-    playSong: uris => dispatch(actionTypes.playSong(uris))
+    playSong: uris => dispatch(actionTypes.playSong(uris)),
   };
 };
 

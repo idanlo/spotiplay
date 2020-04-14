@@ -10,7 +10,7 @@ import MediaCard from '../MediaCard/MediaCard';
 const TypographyHeader = styled(Typography).attrs({
   variant: 'h3',
   align: 'center',
-  color: 'secondary'
+  color: 'secondary',
 })`
   padding: 10px;
 `;
@@ -21,13 +21,13 @@ const GenreView = props => {
   }, [props.match.params.id]);
   return (
     <BrowseCategory id={props.match.params.id}>
-      {genre =>
+      {({ data: genre }) =>
         genre ? (
           <div>
             <TypographyHeader>{genre.name}</TypographyHeader>
             <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
               <BrowseCategoryPlaylists id={props.match.params.id} playlists>
-                {playlists =>
+                {({ data: playlists }) =>
                   playlists ? (
                     playlists.playlists.items.map(playlist => (
                       <MediaCard
@@ -38,7 +38,7 @@ const GenreView = props => {
                         playSong={() =>
                           props.playSong(
                             JSON.stringify({
-                              context_uri: playlist.uri
+                              context_uri: playlist.uri,
                             })
                           )
                         }
@@ -61,13 +61,8 @@ const GenreView = props => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    playSong: uris => dispatch(actionTypes.playSong(uris))
+    playSong: uris => dispatch(actionTypes.playSong(uris)),
   };
 };
 
-export default withRouter(
-  connect(
-    null,
-    mapDispatchToProps
-  )(GenreView)
-);
+export default withRouter(connect(null, mapDispatchToProps)(GenreView));

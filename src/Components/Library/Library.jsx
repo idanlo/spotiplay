@@ -8,7 +8,7 @@ import {
   List,
   ListItem,
   ListItemText,
-  ListItemIcon
+  ListItemIcon,
 } from '@material-ui/core';
 import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
@@ -18,16 +18,16 @@ import MediaCard from '../MediaCard/MediaCard';
 const NavigationItems = [
   {
     link: '/library/playlists',
-    text: 'Playlists'
+    text: 'Playlists',
   },
   {
     link: '/library/albums',
-    text: 'Albums'
+    text: 'Albums',
   },
   {
     link: '/library/tracks',
-    text: 'Tracks'
-  }
+    text: 'Tracks',
+  },
 ];
 
 const Library = props => {
@@ -36,7 +36,7 @@ const Library = props => {
   }, []);
   let savedPlaylists = (
     <UserPlaylists>
-      {playlists =>
+      {({ data: playlists }) =>
         playlists ? (
           <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
             {playlists.items.map(playlist => (
@@ -48,7 +48,7 @@ const Library = props => {
                 playSong={() =>
                   props.playSong(
                     JSON.stringify({
-                      context_uri: playlist.uri
+                      context_uri: playlist.uri,
                     })
                   )
                 }
@@ -62,7 +62,7 @@ const Library = props => {
 
   let savedAlbums = (
     <UserAlbums>
-      {albums =>
+      {({ data: albums }) =>
         albums ? (
           <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
             {albums.items.map(album => (
@@ -74,7 +74,7 @@ const Library = props => {
                 playSong={() =>
                   props.playSong(
                     JSON.stringify({
-                      context_uri: album.album.uri
+                      context_uri: album.album.uri,
                     })
                   )
                 }
@@ -89,7 +89,7 @@ const Library = props => {
   let savedTracks = (
     <UserTracks>
       {tracks =>
-        tracks ? (
+        ({ data: tracks } ? (
           <List>
             {tracks.items.map(track => (
               <ListItem
@@ -114,8 +114,8 @@ const Library = props => {
                           JSON.stringify({
                             context_uri: track.track.album.uri,
                             offset: {
-                              uri: track.track.ui
-                            }
+                              uri: track.track.ui,
+                            },
                           })
                         )
                       }
@@ -126,7 +126,7 @@ const Library = props => {
               </ListItem>
             ))}
           </List>
-        ) : null
+        ) : null)
       }
     </UserTracks>
   );
@@ -149,13 +149,13 @@ const mapStateToProps = state => {
   return {
     user: state.current_user,
     currentlyPlaying: state.currently_playing,
-    isPlaying: state.isPlaying
+    isPlaying: state.isPlaying,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    playSong: uris => dispatch(actionTypes.playSong(uris))
+    playSong: uris => dispatch(actionTypes.playSong(uris)),
   };
 };
 
