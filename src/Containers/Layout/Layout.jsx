@@ -59,7 +59,7 @@ const Background = styled.div`
 class Layout extends Component {
   state = {
     sideDrawerOpen: false,
-    loading: true
+    loading: true,
   };
 
   componentDidMount() {
@@ -67,41 +67,54 @@ class Layout extends Component {
       response => {
         return response;
       },
-      function(error) {
+      error => {
         const originalRequest = error.config;
-        if (error.response.status === 401 && !originalRequest._retry) {
+        if (error?.response?.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
-          logger.log('Error happened');
-          logger.log(error);
-          return window.location.reload();
-          return axios
-            .post('https://spotiplay-backend.herokuapp.com/refresh', {
-              data: JSON.stringify({
-                refresh_token: localStorage.getItem(
-                  'react-spotify-refresh-token'
-                )
+          logger.log('401 Error happened, axios interceptor catched');
+          // acquire refresh token from localStorage
+          const refresh_token = localStorage.getItem(
+            'react-spotify-refresh-token'
+          );
+          if (refresh_token) {
+            return axios
+              .post('https://spotiplay-backend.herokuapp.com/refresh', {
+                data: JSON.stringify({
+                  refresh_token,
+                }),
               })
-            })
-            .then(res => {
-              if (res.status === 200) {
-                // 1) put token to LocalStorage
-                localStorage.setItem(
-                  'react-spotify-access-token',
-                  res.data.access_token
-                );
-                logger.log('New token', res.data);
-                logger.log(originalRequest);
-                this.props.setUser({ access_token: res.data.access_token });
+              .then(res => {
+                if (res.status === 200) {
+                  const { access_token } = res.data;
+                  // put access token in localStorage
+                  localStorage.setItem(
+                    'react-spotify-access-token',
+                    access_token
+                  );
+                  // update the headers for the original request with the new access token in the Authorization header
+                  originalRequest.headers[
+                    'Authorization'
+                  ] = `Bearer ${access_token}`;
+                  // update the user access token in redux store
+                  this.props.setUser({ access_token });
 
-                // // 2) Change Authorization header
-                // axios.defaults.headers.common['Authorization'] =
-                //   'Bearer ' + localStorageService.getAccessToken();
-
-                // 3) return originalRequest object with Axios.
-                return axios(originalRequest);
-              }
-            });
+                  // return the originalRequest object with Axios.
+                  return axios(originalRequest);
+                }
+              });
+          } else {
+            // If the user is in the initial loading - set loading to false and let the user login with Spotify
+            if (this.state.loading) {
+              this.setState({ loading: false });
+            } else {
+              // if the user is not in the initial loading state, and doesn't have a refresh token in the local storage
+              // (something that shouldn't happen) then reload the page
+              return window.location.reload();
+            }
+          }
         }
+        return error;
+        // return axios(originalRequest);
       }
     );
 
@@ -122,8 +135,8 @@ class Layout extends Component {
       axios
         .get('https://api.spotify.com/v1/me', {
           headers: {
-            Authorization: `Bearer ${params.access_token}`
-          }
+            Authorization: `Bearer ${params.access_token}`,
+          },
         })
         .then(({ data }) => {
           localStorage.setItem(
@@ -143,67 +156,14 @@ class Layout extends Component {
             id: data.id,
             type: data.type,
             country: data.country,
-            product: data.product
+            product: data.product,
           };
           logger.log(this.props.setUser);
           this.setState({ loading: false });
           this.logInUserAndGetInfo(newUser);
           this.props.fetchRecentlyPlayed({ limit: 12 });
-        })
-        .catch(err => {
-          // 401 = Unauthorized - the access token is incorrect (expired)
-          if (err.response.status === 401) {
-            // Check if refresh token exists
-            const refreshToken = localStorage.getItem(
-              'react-spotify-refresh-token'
-            );
-            if (refreshToken) {
-              // Send refresh token to server to acquire a new access token
-              axios
-                .post('https://spotiplay-backend.herokuapp.com/refresh', {
-                  data: JSON.stringify({
-                    refresh_token: refreshToken
-                  })
-                })
-                .then(res => {
-                  logger.log('Refresh token response -', res.data);
-                  axios
-                    .get('https://api.spotify.com/v1/me', {
-                      headers: {
-                        Authorization: `Bearer ${res.data.access_token}`
-                      }
-                    })
-                    .then(({ data }) => {
-                      localStorage.setItem(
-                        'react-spotify-access-token',
-                        res.data.access_token
-                      );
-
-                      let newUser = {
-                        access_token: res.data.access_token,
-                        displayName: data.display_name,
-                        email: data.email,
-                        id: data.id,
-                        type: data.type,
-                        country: data.country,
-                        product: data.product
-                      };
-                      this.logInUserAndGetInfo(newUser);
-                      this.props.fetchRecentlyPlayed({ limit: 12 });
-                    });
-                })
-                .catch(e => {
-                  logger.log('Refresh token error -', e);
-                })
-                .finally(() => {
-                  this.setState({ loading: false });
-                });
-            } else {
-              // Refresh token doesn't exist, the user is shown a 'login with Spotify button'
-              this.setState({ loading: false });
-            }
-          }
         });
+      // no need to catch this, if there is a 401 error the axios interceptor will handle it
     } else {
       // The user is shown a 'login with Spotify button'
       this.setState({ loading: false });
@@ -256,7 +216,7 @@ class Layout extends Component {
           flex: 1,
           alignItems: 'center',
           justifyContent: 'center',
-          height: '100vh'
+          height: '100vh',
         }}
       >
         <CircularProgress />
@@ -276,7 +236,7 @@ class Layout extends Component {
                 paddingLeft:
                   this.props.width === 'lg' || this.props.width === 'xl'
                     ? 255
-                    : null
+                    : null,
               }}
             >
               <Switch>
@@ -310,7 +270,7 @@ class Layout extends Component {
 const mapStateToProps = state => {
   return {
     user: state.current_user,
-    backgroundImage: state.backgroundImage
+    backgroundImage: state.backgroundImage,
   };
 };
 
@@ -318,7 +278,7 @@ const mapDispatchToProps = dispatch => {
   return {
     setUser: user => dispatch({ type: actionTypes.SET_USER, user }),
     fetchRecentlyPlayed: options =>
-      dispatch(actionTypes.fetchRecentlyPlayed(options))
+      dispatch(actionTypes.fetchRecentlyPlayed(options)),
   };
 };
 
