@@ -9,7 +9,7 @@ import {
   IconButton,
   CardContent,
   CardMedia,
-  Slider
+  Slider,
 } from '@material-ui/core';
 import SkipNextIcon from '@material-ui/icons/SkipNext';
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
@@ -31,7 +31,7 @@ class MusicPlayer extends Component {
       volumeSliderValue: 50,
       positionStamp: '00:00',
       durationStamp: '00:00',
-      player_init_error: false
+      player_init_error: false,
     };
 
     this.player = null;
@@ -59,7 +59,7 @@ class MusicPlayer extends Component {
         name: "Idanlo's Spotify App",
         getOAuthToken: cb => {
           cb(token);
-        }
+        },
       });
     }
 
@@ -91,7 +91,7 @@ class MusicPlayer extends Component {
         this.setState({
           playingInfo: state,
           playing: !state.paused,
-          positionSliderValue: val
+          positionSliderValue: val,
         });
 
         // Music started playing, start the position interval
@@ -143,7 +143,7 @@ class MusicPlayer extends Component {
         let val = (position * 100) / duration;
         if (val !== this.state.positionSliderValue) {
           this.setState({
-            positionSliderValue: val
+            positionSliderValue: val,
           });
         }
 
@@ -163,12 +163,12 @@ class MusicPlayer extends Component {
       method: 'PUT',
       headers: {
         Authorization: `Bearer ${this.props.user.access_token}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         device_ids: [deviceId],
-        play: false
-      })
+        play: false,
+      }),
     })
       .then(res => {
         logger.log('status', res.status);
@@ -176,8 +176,8 @@ class MusicPlayer extends Component {
           axios
             .get('https://api.spotify.com/v1/me/player', {
               headers: {
-                Authorization: `Bearer ${this.props.user.access_token}`
-              }
+                Authorization: `Bearer ${this.props.user.access_token}`,
+              },
             })
             .then(() => {
               // Transferred playback successfully, get current timestamp
@@ -241,7 +241,7 @@ class MusicPlayer extends Component {
           position: 'fixed',
           bottom: 0,
           width: '100%',
-          height: 100
+          height: 100,
         }}
       >
         <Typography
@@ -278,14 +278,14 @@ class MusicPlayer extends Component {
                 style={{
                   display: 'flex',
                   height: '100%',
-                  boxShadow: 'none'
+                  boxShadow: 'none',
                 }}
               >
                 <CardMedia
                   style={{
                     width: 80,
                     height: 80,
-                    margin: 10
+                    margin: 10,
                   }}
                   image={
                     this.state.playingInfo.track_window.current_track.album
@@ -298,11 +298,11 @@ class MusicPlayer extends Component {
                     display: 'flex',
                     alignItems: 'center',
                     paddingLeft: '16',
-                    paddingBottom: '16'
+                    paddingBottom: '16',
                   }}
                 >
                   <CardContent style={{ flex: '1 0 auto' }}>
-                    <Typography variant="h5">
+                    <Typography variant="h5" style={{ fontWeight: 'bold' }}>
                       {this.state.playingInfo.track_window.current_track.name}
                     </Typography>
                     <Typography variant="subtitle1">
@@ -355,7 +355,7 @@ class MusicPlayer extends Component {
                   xs={2}
                   style={{
                     textAlign: 'center',
-                    marginTop: 5
+                    marginTop: 5,
                   }}
                 >
                   <Typography>{this.state.positionStamp}</Typography>
@@ -371,7 +371,7 @@ class MusicPlayer extends Component {
                   xs={2}
                   style={{
                     textAlign: 'center',
-                    marginTop: 5
+                    marginTop: 5,
                   }}
                 >
                   <Typography>{this.state.durationStamp}</Typography>
@@ -403,7 +403,7 @@ const mapStateToProps = state => {
     user: state.current_user,
     playNow: state.play_now,
     currentlyPlaying: state.currently_playing,
-    isPlaying: state.isPlaying
+    isPlaying: state.isPlaying,
   };
 };
 
@@ -413,7 +413,7 @@ const mapDispatchToProps = dispatch => {
     setCurrentlyPlaying: song =>
       dispatch({ type: actionTypes.SET_CURRENTLY_PLAYING, song }),
     setIsPlaying: isPlaying =>
-      dispatch({ type: actionTypes.SET_IS_PLAYING, isPlaying })
+      dispatch({ type: actionTypes.SET_IS_PLAYING, isPlaying }),
   };
 };
 

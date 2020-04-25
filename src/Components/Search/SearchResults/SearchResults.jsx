@@ -57,26 +57,29 @@ function SearchResults(props) {
       <Grid container>
         {data.artists.items.length > 0 && data.tracks.items.length > 0 ? (
           <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
-            <MediaCard
-              rounded
-              link={'/artist/' + data.artists.items[0].id}
-              img={
-                data.artists.items[0].images.length > 0
-                  ? data.artists.items[0].images[0].url
-                  : null
-              }
-              content={data.artists.items[0].name}
-              playSong={() =>
-                props.playSong(
-                  JSON.stringify({
-                    context_uri: data.artists.items[0].uri,
-                  })
-                )
-              }
-            />
+            <>
+              <Typography>Top Result</Typography>
+              <MediaCard
+                rounded
+                link={'/artist/' + data.artists.items[0].id}
+                img={
+                  data.artists.items[0].images.length > 0
+                    ? data.artists.items[0].images[0].url
+                    : null
+                }
+                primaryText={data.artists.items[0].name}
+                playSong={() =>
+                  props.playSong(
+                    JSON.stringify({
+                      context_uri: data.artists.items[0].uri,
+                    })
+                  )
+                }
+              />
+            </>
             <Grid item xs={12} sm={6} md={10}>
               <List>
-                {data.tracks.items.slice(0, 6).map(track => {
+                {data.tracks.items.slice(0, 12).map(track => {
                   const ArtistAlbumLink = (
                     <React.Fragment>
                       {track.artists.map((artist, index) => (
@@ -129,6 +132,9 @@ function SearchResults(props) {
                       </ListItemIcon>
                       <ListItemText
                         primary={track.name}
+                        primaryTypographyProps={{
+                          style: { fontWeight: 'bold' },
+                        }}
                         secondary={ArtistAlbumLink}
                       />
                       <ListItemText
@@ -155,13 +161,14 @@ function SearchResults(props) {
               Artists
             </Typography>
             <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
-              {data.artists.items.slice(0, 6).map(artist => (
+              {data.artists.items.slice(0, 12).map(artist => (
                 <MediaCard
                   rounded
                   key={artist.id}
                   link={'/artist/' + artist.id}
                   img={artist.images.length > 0 ? artist.images[0].url : null}
-                  content={artist.name}
+                  primaryText={artist.name}
+                  secondaryText={'Artist'}
                   playSong={() =>
                     props.playSong(
                       JSON.stringify({
@@ -185,14 +192,13 @@ function SearchResults(props) {
               Albums
             </Typography>
             <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
-              {data.albums.items.slice(0, 6).map(album => (
+              {data.albums.items.slice(0, 12).map(album => (
                 <MediaCard
                   key={album.id}
                   link={'/album/' + album.id}
                   img={album.images.length > 0 ? album.images[0].url : null}
-                  content={`${album.artists.map(a => a.name).join(', ')} - ${
-                    album.name
-                  }`}
+                  primaryText={album.name}
+                  secondaryText={album.artists.map(a => a.name).join(', ')}
                   playSong={() =>
                     props.playSong(
                       JSON.stringify({
@@ -217,7 +223,7 @@ function SearchResults(props) {
             key={artist.id}
             link={'/album/' + artist.id}
             img={artist.images.length > 0 ? artist.images[0].url : null}
-            content={artist.name}
+            primaryText={artist.name}
             playSong={() =>
               props.playSong(
                 JSON.stringify({
@@ -296,7 +302,7 @@ function SearchResults(props) {
             key={album.id}
             link={'/album/' + album.id}
             img={album.images.length > 0 ? album.images[0].url : null}
-            content={`${album.artists.map(a => a.name).join(', ')} - ${
+            primaryText={`${album.artists.map(a => a.name).join(', ')} - ${
               album.name
             }`}
             playSong={() =>
@@ -319,7 +325,7 @@ function SearchResults(props) {
             key={playlist.id}
             link={'/playlist/' + playlist.id}
             img={playlist.images.length > 0 ? playlist.images[0].url : null}
-            content={playlist.name}
+            primaryText={playlist.name}
             playSong={() =>
               props.playSong(
                 JSON.stringify({

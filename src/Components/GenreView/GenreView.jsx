@@ -17,7 +17,7 @@ const TypographyHeader = styled(Typography).attrs({
 
 const GenreView = props => {
   React.useEffect(() => {
-    document.title = 'React Spotify | ' + props.match.params.id;
+    document.title = 'Spotiplay | ' + props.match.params.id;
   }, [props.match.params.id]);
   return (
     <BrowseCategory id={props.match.params.id}>

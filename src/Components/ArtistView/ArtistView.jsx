@@ -38,7 +38,7 @@ class ArtistView extends Component {
   };
 
   changeTitle = artistName => {
-    document.title = 'React Spotify | ' + artistName;
+    document.title = 'Spotiplay | ' + artistName;
   };
 
   render() {

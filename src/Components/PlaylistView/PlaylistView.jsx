@@ -50,7 +50,7 @@ class PlaylistView extends Component {
   };
 
   changeTitle = playlistName => {
-    document.title = 'React Spotify | ' + playlistName;
+    document.title = 'Spotiplay | ' + playlistName;
   };
 
   render() {

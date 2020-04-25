@@ -32,7 +32,7 @@ const NavigationItems = [
 
 const Library = props => {
   React.useEffect(() => {
-    document.title = 'React Spotify | Library';
+    document.title = 'Spotiplay | Library';
   }, []);
   let savedPlaylists = (
     <UserPlaylists>
@@ -44,7 +44,14 @@ const Library = props => {
                 key={playlist.id}
                 link={`/playlist/${playlist.id}`}
                 img={playlist.images.length > 0 ? playlist.images[0].url : null}
-                content={playlist.name}
+                primaryText={playlist.name}
+                secondaryText={
+                  playlist.description ||
+                  (playlist.owner.display_name
+                    ? `By ${playlist.owner.display_name}`
+                    : null) ||
+                  ''
+                } // Playlist description is optional
                 playSong={() =>
                   props.playSong(
                     JSON.stringify({
@@ -71,6 +78,8 @@ const Library = props => {
                 link={`/album/${album.album.id}`}
                 img={album.album.images[0].url}
                 content={album.album.name}
+                primaryText={album.album.name}
+                secondaryText={album.album.artists.map(a => a.name).join(', ')}
                 playSong={() =>
                   props.playSong(
                     JSON.stringify({

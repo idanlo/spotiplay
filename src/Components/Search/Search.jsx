@@ -8,7 +8,7 @@ import { Grid } from '@material-ui/core';
 
 class Search extends Component {
   state = {
-    query: '' // used for the search input, updated every keystroke
+    query: '', // used for the search input, updated every keystroke
   };
 
   componentDidMount() {
@@ -19,7 +19,7 @@ class Search extends Component {
     this.props.setBackgroundImage(
       'linear-gradient(rgb(58, 91, 95), rgb(6, 9, 10) 85%)'
     );
-    document.title = 'React Spotify | Search';
+    document.title = 'Spotiplay | Search';
   }
 
   queryChangedHandler = e => {
@@ -52,14 +52,9 @@ const mapDispatchToProps = dispatch => {
     setBackgroundImage: backgroundImage =>
       dispatch({
         type: actionTypes.SET_BACKGROUND_IMAGE,
-        backgroundImage
-      })
+        backgroundImage,
+      }),
   };
 };
 
-export default withRouter(
-  connect(
-    null,
-    mapDispatchToProps
-  )(Search)
-);
+export default withRouter(connect(null, mapDispatchToProps)(Search));

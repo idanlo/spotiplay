@@ -13,7 +13,7 @@ import {
   withWidth,
   Paper,
   Divider,
-  ListItemAvatar
+  ListItemAvatar,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import SpotifyIcon from './spotify.svg';
@@ -33,7 +33,7 @@ const Sidedrawer = props => {
           component={Link}
           to={`/album/${track.track.album.id}`}
           style={{
-            height: 64
+            height: 64,
           }}
         >
           <ListItemIcon>
@@ -46,7 +46,8 @@ const Sidedrawer = props => {
                 fontSize: 13,
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
-                overflow: 'hidden'
+                overflow: 'hidden',
+                fontWeight: 'bold',
               }}
             >
               {track.track.album.name}
@@ -56,7 +57,7 @@ const Sidedrawer = props => {
               style={{
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
-                overflow: 'hidden'
+                overflow: 'hidden',
               }}
             >
               album
@@ -123,7 +124,7 @@ const Sidedrawer = props => {
         style={{
           height: '100%',
           width: 255,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)'
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
         }}
       >
         {mainList}
@@ -132,7 +133,7 @@ const Sidedrawer = props => {
             position: 'absolute',
             top: '73%',
             left: 0,
-            width: '100%'
+            width: '100%',
           }}
         >
           <a
@@ -160,7 +161,7 @@ const Sidedrawer = props => {
                   src={GithubIcon}
                   style={{
                     width: 25,
-                    height: 25
+                    height: 25,
                   }}
                 />
               </ListItemAvatar>
@@ -177,7 +178,7 @@ const Sidedrawer = props => {
 
 const mapStateToProps = state => {
   return {
-    recently_played: state.recently_played
+    recently_played: state.recently_played,
   };
 };
 

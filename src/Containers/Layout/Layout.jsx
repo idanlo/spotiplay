@@ -91,6 +91,9 @@ class Layout extends Component {
                     'react-spotify-access-token',
                     access_token
                   );
+                  axios.defaults.headers[
+                    'Authorization'
+                  ] = `Bearer ${access_token}`;
                   // update the headers for the original request with the new access token in the Authorization header
                   originalRequest.headers[
                     'Authorization'
@@ -143,12 +146,18 @@ class Layout extends Component {
             'react-spotify-access-token',
             params.access_token
           );
+
+          axios.defaults.headers[
+            'Authorization'
+          ] = `Bearer ${params.access_token}`;
+
           if (params.refresh_token) {
             localStorage.setItem(
               'react-spotify-refresh-token',
               params.refresh_token
             );
           }
+
           let newUser = {
             access_token: params.access_token,
             displayName: data.display_name,
@@ -159,9 +168,19 @@ class Layout extends Component {
             product: data.product,
           };
           logger.log(this.props.setUser);
-          this.setState({ loading: false });
           this.logInUserAndGetInfo(newUser);
-          this.props.fetchRecentlyPlayed({ limit: 12 });
+          // If this fails then the user will still see the login page, that means the Layout page will 100% have the recently played tracks
+          axios({
+            url: 'https://api.spotify.com/v1/me/player/recently-played',
+            method: 'GET',
+            params: {
+              limit: 12,
+            },
+          }).then(res => {
+            console.log(res);
+            this.props.setRecentlyPlayed(res.data.items);
+            this.setState({ loading: false });
+          });
         });
       // no need to catch this, if there is a 401 error the axios interceptor will handle it
     } else {
@@ -277,8 +296,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     setUser: user => dispatch({ type: actionTypes.SET_USER, user }),
-    fetchRecentlyPlayed: options =>
-      dispatch(actionTypes.fetchRecentlyPlayed(options)),
+    setRecentlyPlayed: recentlyPlayed =>
+      dispatch(actionTypes.setRecentlyPlayed(recentlyPlayed)),
   };
 };
 

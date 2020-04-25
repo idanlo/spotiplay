@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Switch, Route } from 'react-router-dom';
+import axios from 'axios';
 import { Grid, Typography } from '@material-ui/core';
 import MediaCard from '../MediaCard/MediaCard';
 import { BrowseFeatured, BrowseCategories, BrowseNew } from 'react-spotify-api';
@@ -14,14 +15,54 @@ const TypographyHeader = styled(Typography).attrs({
   color: 'secondary',
 })`
   padding: 10px;
+  font-weight: 800;
+  font-size: 72px;
 `;
 
 class HomePage extends Component {
+  state = {
+    forYou: [],
+  };
+
   componentDidMount() {
     this.props.setBackgroundImage(
       'linear-gradient(rgb(58, 91, 95), rgb(6, 9, 10) 85%)'
     );
-    document.title = 'React Spotify | Home';
+    document.title = 'Spotiplay | Home';
+
+    const seed_artists = [];
+    const seed_tracks = [];
+    for (const item of this.props.recently_played) {
+      if (item.context && item.context.type === 'artist') {
+        // limited to 5 seed artists
+        if (seed_artists.length >= 5) {
+          continue;
+        }
+        seed_artists.push(item.context.uri.slice(15)); // The ID starts at position 15 of the URI string
+      } else {
+        // limited to 5 seed tracks
+        if (seed_tracks.length >= 5) {
+          continue;
+        }
+        seed_tracks.push(item.track.id);
+      }
+    }
+
+    // if there are no seeds this will error, so make a check if there are seeds (length of at least 1 array is more than 0)
+    if (seed_artists.length || seed_tracks.length) {
+      axios
+        .get('https://api.spotify.com/v1/recommendations', {
+          params: {
+            seed_artists: seed_artists.length
+              ? seed_artists.join(',')
+              : undefined,
+            seed_tracks: seed_tracks.length ? seed_tracks.join(',') : undefined,
+          },
+        })
+        .then(data => {
+          this.setState({ forYou: data.data.tracks });
+        });
+    }
   }
 
   render() {
@@ -44,39 +85,73 @@ class HomePage extends Component {
       },
     ];
 
-    let recentlyPlayed = null;
-    if (this.props.recently_played) {
-      recentlyPlayed = this.props.recently_played.map(track => {
-        let artist = track.track.artists.map(name => name.name).join(', ');
-        return (
-          <MediaCard
-            key={`${track.track.id} - ${track.played_at}`} // There is a problem with the artist id only because some recently played songs appear couple of times so they key isn't unique
-            link={'/album/' + track.track.album.id}
-            img={track.track.album.images[0].url}
-            content={`${artist} - ${track.track.name}`}
-            playSong={() =>
-              this.props.playSong(
-                JSON.stringify({
-                  context_uri: track.track.album.uri,
-                  offset: {
-                    uri: track.track.uri,
-                  },
-                })
-              )
-            }
-          />
-        );
-      });
+    let recentlyPlayed = (
+      <div>
+        <TypographyHeader>Recently Played</TypographyHeader>
+        <Grid
+          container
+          spacing={2}
+          style={{ margin: 0, width: '100%' }} // inline styles overwrite the material ui styles (no spacing on the left side)
+        >
+          {this.props.recently_played.map(track => {
+            let artist = track.track.artists.map(name => name.name).join(', ');
+            return (
+              <MediaCard
+                key={`${track.track.id} - ${track.played_at}`} // There is a problem with the artist id only because some recently played songs appear couple of times so they key isn't unique
+                link={'/album/' + track.track.album.id}
+                img={track.track.album.images[0].url}
+                primaryText={track.track.name}
+                secondaryText={artist}
+                playSong={() =>
+                  this.props.playSong(
+                    JSON.stringify({
+                      context_uri: track.track.album.uri,
+                      offset: {
+                        uri: track.track.uri,
+                      },
+                    })
+                  )
+                }
+              />
+            );
+          })}
+        </Grid>
+      </div>
+    );
 
-      recentlyPlayed = (
+    let forYou = null;
+    if (this.state.forYou && this.state.forYou.length) {
+      forYou = (
         <div>
-          <TypographyHeader>Recently Played</TypographyHeader>
+          <TypographyHeader>For You</TypographyHeader>
           <Grid
             container
             spacing={2}
             style={{ margin: 0, width: '100%' }} // inline styles overwrite the material ui styles (no spacing on the left side)
           >
-            {recentlyPlayed}
+            {this.state.forYou.map(track => {
+              return (
+                <MediaCard
+                  key={track.id} // There is a problem with the artist id only because some recently played songs appear couple of times so they key isn't unique
+                  link={'/album/' + track.album.id}
+                  img={track.album.images[0].url}
+                  primaryText={track.name}
+                  secondaryText={track.artists
+                    .map(name => name.name)
+                    .join(', ')}
+                  playSong={() =>
+                    this.props.playSong(
+                      JSON.stringify({
+                        context_uri: track.album.uri,
+                        offset: {
+                          uri: track.uri,
+                        },
+                      })
+                    )
+                  }
+                />
+              );
+            })}
           </Grid>
         </div>
       );
@@ -94,7 +169,14 @@ class HomePage extends Component {
                     key={playlist.id}
                     link={`/playlist/${playlist.id}`}
                     img={playlist.images[0].url}
-                    content={playlist.name}
+                    primaryText={playlist.name}
+                    secondaryText={
+                      playlist.description ||
+                      (playlist.owner.display_name
+                        ? `By ${playlist.owner.display_name}`
+                        : null) ||
+                      ''
+                    } // Playlist description is optional
                     playSong={() =>
                       this.props.playSong(
                         JSON.stringify({
@@ -123,7 +205,8 @@ class HomePage extends Component {
                       link={`/genre/${genre.id}`}
                       key={genre.id}
                       img={genre.icons[0].url}
-                      content={genre.name}
+                      primaryText={genre.name}
+                      secondaryText={'Genre'}
                     />
                   ))
                 : null
@@ -145,7 +228,8 @@ class HomePage extends Component {
                       link={`/album/${album.id}`}
                       key={album.id}
                       img={album.images[0].url}
-                      content={album.name}
+                      primaryText={album.name}
+                      secondaryText={album.artists.map(a => a.name).join(', ')}
                       playSong={() =>
                         this.props.playSong(
                           JSON.stringify({
@@ -172,6 +256,7 @@ class HomePage extends Component {
             render={() => (
               <div>
                 {recentlyPlayed}
+                {forYou}
                 {featuredPlaylists}
               </div>
             )}

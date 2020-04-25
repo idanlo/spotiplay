@@ -41,7 +41,7 @@ class AlbumView extends Component {
   }
 
   changeTitle = albumName => {
-    document.title = 'React Spotify | ' + albumName;
+    document.title = 'Spotiplay | ' + albumName;
   };
 
   checkIsAlbumSaved = () => {
@@ -121,7 +121,9 @@ class AlbumView extends Component {
                             );
                           }}
                         />
-                        <Typography variant="h6">{album.name}</Typography>
+                        <Typography variant="h6" style={{ fontWeight: 'bold' }}>
+                          {album.name}
+                        </Typography>
                         <Typography variant="subtitle1" color="textSecondary">
                           {album.artists.map((artist, index) => (
                             <React.Fragment key={artist.id}>
@@ -218,6 +220,10 @@ class AlbumView extends Component {
                                 <ListItemText
                                   primary={track.name}
                                   secondary={ArtistAlbumLink}
+                                  primaryTypographyProps={{
+                                    style: { fontWeight: 'bold' },
+                                  }}
+                                  style={{ fontWeight: 'bold' }}
                                 />
                                 <ListItemText
                                   style={{
