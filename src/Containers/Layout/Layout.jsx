@@ -167,7 +167,6 @@ class Layout extends Component {
             country: data.country,
             product: data.product,
           };
-          logger.log(this.props.setUser);
           this.logInUserAndGetInfo(newUser);
           // If this fails then the user will still see the login page, that means the Layout page will 100% have the recently played tracks
           axios({
@@ -177,7 +176,7 @@ class Layout extends Component {
               limit: 12,
             },
           }).then(res => {
-            console.log(res);
+            logger.log(res);
             this.props.setRecentlyPlayed(res.data.items);
             this.setState({ loading: false });
           });
