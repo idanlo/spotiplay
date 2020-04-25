@@ -1619,12 +1619,13 @@
     "@babel/runtime" "^7.7.2"
     core-js "^3.4.1"
 
-"@material-ui/core@^4.9.10":
-  version "4.9.10"
-  resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-4.9.10.tgz#53f1d18bd274c258698b6cfdab3c4bee0edf7892"
-  integrity sha512-CQuZU9Y10RkwSdxjn785kw2EPcXhv5GKauuVQufR9LlD37kjfn21Im1yvr6wsUzn81oLhEvVPz727UWC0gbqxg==
+"@material-ui/core@^4.9.11":
+  version "4.9.11"
+  resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-4.9.11.tgz#02f45f4dbea6db191fdc0d993323d64cfae613fd"
+  integrity sha512-S2Ha9GpTxzl29XMeMc8dQX2pj97yApNzuhe/23If53fMdg5Fmd3SgbE1bMbyXeKhxwtXZjOFxd0vU+W/sez8Ew==
   dependencies:
     "@babel/runtime" "^7.4.4"
+    "@material-ui/react-transition-group" "^4.2.0"
     "@material-ui/styles" "^4.9.10"
     "@material-ui/system" "^4.9.10"
     "@material-ui/types" "^5.0.1"
@@ -1654,6 +1655,16 @@
     clsx "^1.0.4"
     prop-types "^15.7.2"
     react-is "^16.8.0"
+
+"@material-ui/react-transition-group@^4.2.0":
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@material-ui/react-transition-group/-/react-transition-group-4.3.0.tgz#92529142addb5cc179dbf42d246c7e3fe4d6104b"
+  integrity sha512-CwQ0aXrlUynUTY6sh3UvKuvye1o92en20VGAs6TORnSxUYeRmkX8YeTUN3lAkGiBX1z222FxLFO36WWh6q73rQ==
+  dependencies:
+    "@babel/runtime" "^7.5.5"
+    dom-helpers "^5.0.1"
+    loose-envify "^1.4.0"
+    prop-types "^15.6.2"
 
 "@material-ui/styles@^4.9.10":
   version "4.9.10"
@@ -7446,11 +7457,6 @@ merge2@^1.2.3:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/merge2/-/merge2-1.3.0.tgz#5b366ee83b2f1582c48f87e47cf1a9352103ca81"
   integrity sha512-2j4DAdlBOkiSZIsaXk4mTE3sRS02yBHAtfy127xRV3bQUFqXkjHCHLW6Scv7DwNRbIWNHH8zpnz9zMaKXIdvYw==
-
-merge@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/merge/-/merge-1.2.1.tgz#38bebf80c3220a8a487b6fcfb3941bb11720c145"
-  integrity sha512-VjFo4P5Whtj4vsLzsYBu5ayHhoHJ0UqNm7ibvShmbmoz7tGi0vXaoJbGdB+GmDMLUdg8DpQXEIeVDAe8MaABvQ==
 
 methods@~1.1.2:
   version "1.1.2"
