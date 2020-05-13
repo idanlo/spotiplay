@@ -19,6 +19,7 @@ const GenreView = props => {
   React.useEffect(() => {
     document.title = 'Spotiplay | ' + props.match.params.id;
   }, [props.match.params.id]);
+
   return (
     <BrowseCategory id={props.match.params.id}>
       {({ data: genre }) =>
@@ -26,34 +27,34 @@ const GenreView = props => {
           <div>
             <TypographyHeader>{genre.name}</TypographyHeader>
             <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
-              <BrowseCategoryPlaylists id={props.match.params.id} playlists>
+              <BrowseCategoryPlaylists
+                id={props.match.params.id}
+                options={{ limit: 50 }}
+              >
                 {({ data: playlists }) =>
-                  playlists ? (
-                    playlists.playlists.items.map(playlist => (
-                      <MediaCard
-                        link={`/playlist/${playlist.id}`}
-                        key={playlist.id}
-                        img={playlist.images[0].url}
-                        content={playlist.name}
-                        playSong={() =>
-                          props.playSong(
-                            JSON.stringify({
-                              context_uri: playlist.uri,
-                            })
-                          )
-                        }
-                      />
-                    ))
-                  ) : (
-                    <h1>Loading playlists for this genre</h1>
-                  )
+                  playlists
+                    ? playlists.playlists.items.map(playlist => (
+                        <MediaCard
+                          link={`/playlist/${playlist.id}`}
+                          key={playlist.id}
+                          img={playlist.images[0].url}
+                          primaryText={playlist.name}
+                          secondaryText={playlist.description}
+                          playSong={() =>
+                            props.playSong(
+                              JSON.stringify({
+                                context_uri: playlist.uri,
+                              })
+                            )
+                          }
+                        />
+                      ))
+                    : null
                 }
               </BrowseCategoryPlaylists>
             </Grid>
           </div>
-        ) : (
-          <h1>Loading Genre...</h1>
-        )
+        ) : null
       }
     </BrowseCategory>
   );

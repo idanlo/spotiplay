@@ -1,9 +1,10 @@
 import React from 'react';
-import { withRouter, Switch, Route } from 'react-router-dom';
+import { withRouter, Switch, Route, useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
 import {
   Grid,
   Typography,
+  Button,
   List,
   ListItem,
   ListItemText,
@@ -14,10 +15,13 @@ import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import { useSearch } from 'react-spotify-api';
 import * as actionTypes from '../../../store/actions/actionTypes';
-import Navigation from '../../Navigation/Navigation';
 import MediaCard from '../../MediaCard/MediaCard';
-import { TrackDetailsLink } from '../../UI/TrackDetailsLink';
+import { TrackDetailsLink, TypographyHeader } from '../../UI';
 import { milisToMinutesAndSeconds } from '../../../utils/index';
+import TrackResults from './Tracks';
+import ArtistResults from './Artists';
+import PlaylistResults from './Playlists';
+import AlbumResults from './Albums';
 
 const searchOpts = {
   album: true,
@@ -27,38 +31,29 @@ const searchOpts = {
 };
 
 function SearchResults(props) {
-  const NavigationItems = [
-    {
-      link: '/search/results/' + props.match.params.query,
-      text: 'Top Reults',
-    },
-    {
-      link: '/search/artists/' + props.match.params.query,
-      text: 'Artists',
-    },
-    {
-      link: '/search/tracks/' + props.match.params.query,
-      text: 'Tracks',
-    },
-    {
-      link: '/search/albums/' + props.match.params.query,
-      text: 'Albums',
-    },
-    {
-      link: '/search/playlists/' + props.match.params.query,
-      text: 'Playlists',
-    },
-  ];
+  const { query } = useParams();
 
-  const { data, loading } = useSearch(props.match.params.query, searchOpts);
+  const { data, loading } = useSearch(query, searchOpts);
 
   let TopResults =
     data && data.artists && data.tracks && data.albums ? (
       <Grid container>
         {data.artists.items.length > 0 && data.tracks.items.length > 0 ? (
-          <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
-            <>
-              <Typography>Top Result</Typography>
+          <>
+            <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
+              <Grid item md={2} sm={6} xs={12}>
+                <TypographyHeader style={{ fontSize: 30 }}>
+                  Top Result
+                </TypographyHeader>
+              </Grid>
+
+              <Grid item xs={12} sm={6} md={10}>
+                <TypographyHeader style={{ fontSize: 30 }}>
+                  Songs
+                </TypographyHeader>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
               <MediaCard
                 rounded
                 link={'/artist/' + data.artists.items[0].id}
@@ -76,266 +71,223 @@ function SearchResults(props) {
                   )
                 }
               />
-            </>
-            <Grid item xs={12} sm={6} md={10}>
-              <List>
-                {data.tracks.items.slice(0, 12).map(track => {
-                  const ArtistAlbumLink = (
-                    <React.Fragment>
-                      {track.artists.map((artist, index) => (
-                        <React.Fragment key={artist.id}>
-                          <TrackDetailsLink to={'/artist/' + artist.id}>
-                            {artist.name}
-                          </TrackDetailsLink>
-                          {index !== track.artists.length - 1 ? ', ' : null}
-                        </React.Fragment>
-                      ))}
-                      <span> • </span>
-                      <TrackDetailsLink to={'/album/' + track.album.id}>
-                        {track.album.name}
-                      </TrackDetailsLink>
-                    </React.Fragment>
-                  );
-                  return (
-                    <ListItem
-                      key={track.id}
-                      style={
-                        props.currentlyPlaying === track.name && props.isPlaying
-                          ? {
-                              background: '#1db954',
-                            }
-                          : null
-                      }
-                    >
-                      <ListItemIcon
-                        style={{
-                          cursor: 'pointer',
-                        }}
+
+              <Grid item xs={12} sm={6} md={10}>
+                <List>
+                  {data.tracks.items.slice(0, 3).map(track => {
+                    const ArtistAlbumLink = (
+                      <React.Fragment>
+                        {track.artists.map((artist, index) => (
+                          <React.Fragment key={artist.id}>
+                            <TrackDetailsLink to={'/artist/' + artist.id}>
+                              {artist.name}
+                            </TrackDetailsLink>
+                            {index !== track.artists.length - 1 ? ', ' : null}
+                          </React.Fragment>
+                        ))}
+                        <span> • </span>
+                        <TrackDetailsLink to={'/album/' + track.album.id}>
+                          {track.album.name}
+                        </TrackDetailsLink>
+                      </React.Fragment>
+                    );
+                    return (
+                      <ListItem
+                        key={track.id}
+                        style={
+                          props.currentlyPlaying === track.name &&
+                          props.isPlaying
+                            ? {
+                                background: '#1db954',
+                              }
+                            : null
+                        }
                       >
-                        {props.currentlyPlaying === track.name &&
-                        props.isPlaying ? (
-                          <PauseIcon onClick={props.pauseSong} />
-                        ) : (
-                          <PlayArrowIcon
-                            onClick={() =>
-                              props.playSong(
-                                JSON.stringify({
-                                  context_uri: track.album.uri,
-                                  offset: {
-                                    uri: track.uri,
-                                  },
-                                })
-                              )
-                            }
-                          />
-                        )}
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={track.name}
-                        primaryTypographyProps={{
-                          style: { fontWeight: 'bold' },
-                        }}
-                        secondary={ArtistAlbumLink}
-                      />
-                      <ListItemText
-                        style={{
-                          textAlign: 'right',
-                        }}
-                        primary={milisToMinutesAndSeconds(track.duration_ms)}
-                      />
-                    </ListItem>
-                  );
-                })}
-              </List>
+                        <ListItemIcon
+                          style={{
+                            cursor: 'pointer',
+                          }}
+                        >
+                          {props.currentlyPlaying === track.name &&
+                          props.isPlaying ? (
+                            <PauseIcon onClick={props.pauseSong} />
+                          ) : (
+                            <PlayArrowIcon
+                              onClick={() =>
+                                props.playSong(
+                                  JSON.stringify({
+                                    context_uri: track.album.uri,
+                                    offset: {
+                                      uri: track.uri,
+                                    },
+                                  })
+                                )
+                              }
+                            />
+                          )}
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={track.name}
+                          primaryTypographyProps={{
+                            style: { fontWeight: 'bold' },
+                          }}
+                          secondary={ArtistAlbumLink}
+                        />
+                        <ListItemText
+                          style={{
+                            textAlign: 'right',
+                          }}
+                          primary={milisToMinutesAndSeconds(track.duration_ms)}
+                        />
+                      </ListItem>
+                    );
+                  })}
+                  <ListItem>
+                    <ListItemText>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() =>
+                          props.history.push('/search/' + query + '/tracks')
+                        }
+                      >
+                        See more
+                      </Button>
+                    </ListItemText>
+                  </ListItem>
+                </List>
+              </Grid>
             </Grid>
-          </Grid>
-        ) : null}
-        {data.artists.items.length > 0 ? (
-          <div style={{ width: '100%' }}>
-            <Typography
-              style={{ padding: 10 }}
-              color="secondary"
-              variant="h6"
-              align="center"
-            >
-              Artists
-            </Typography>
-            <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
-              {data.artists.items.slice(0, 12).map(artist => (
-                <MediaCard
-                  rounded
-                  key={artist.id}
-                  link={'/artist/' + artist.id}
-                  img={artist.images.length > 0 ? artist.images[0].url : null}
-                  primaryText={artist.name}
-                  secondaryText={'Artist'}
-                  playSong={() =>
-                    props.playSong(
-                      JSON.stringify({
-                        context_uri: artist.uri,
-                      })
-                    )
-                  }
-                />
-              ))}
-            </Grid>
-          </div>
-        ) : null}
-        {data.albums.items.length > 0 ? (
-          <div style={{ width: '100%' }}>
-            <Typography
-              style={{ padding: 10 }}
-              color="secondary"
-              variant="h6"
-              align="center"
-            >
-              Albums
-            </Typography>
-            <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
-              {data.albums.items.slice(0, 12).map(album => (
-                <MediaCard
-                  key={album.id}
-                  link={'/album/' + album.id}
-                  img={album.images.length > 0 ? album.images[0].url : null}
-                  primaryText={album.name}
-                  secondaryText={album.artists.map(a => a.name).join(', ')}
-                  playSong={() =>
-                    props.playSong(
-                      JSON.stringify({
-                        context_uri: album.uri,
-                      })
-                    )
-                  }
-                />
-              ))}
-            </Grid>
-          </div>
+          </>
         ) : null}
       </Grid>
     ) : null;
 
   let Artists =
     data && data.artists ? (
-      <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
-        {data.artists.items.map(artist => (
-          <MediaCard
-            rounded
-            key={artist.id}
-            link={'/album/' + artist.id}
-            img={artist.images.length > 0 ? artist.images[0].url : null}
-            primaryText={artist.name}
-            playSong={() =>
-              props.playSong(
-                JSON.stringify({
-                  context_uri: artist.uri,
-                })
-              )
-            }
-          />
-        ))}
-      </Grid>
-    ) : null;
-
-  let Tracks =
-    data && data.tracks ? (
-      <List style={{ width: '100%' }}>
-        {data.tracks.items.map(track => {
-          const ArtistAlbumLink = (
-            <React.Fragment>
-              {track.artists.map((artist, index) => (
-                <React.Fragment key={artist.id}>
-                  <TrackDetailsLink to={'/artist/' + artist.id}>
-                    {artist.name}
-                  </TrackDetailsLink>
-                  {index !== track.artists.length - 1 ? ', ' : null}
-                </React.Fragment>
-              ))}
-              <span> • </span>
-              <TrackDetailsLink to={'/album/' + track.album.id}>
-                {track.album.name}
-              </TrackDetailsLink>
-            </React.Fragment>
-          );
-          return (
-            <ListItem
-              key={track.id}
-              style={
-                props.currentlyPlaying === track.name && props.isPlaying
-                  ? { background: '#1db954' }
-                  : null
+      <>
+        <div
+          style={{
+            display: 'flex',
+            flex: 1,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <TypographyHeader>Artists</TypographyHeader>
+          <Button
+            color="primary"
+            onClick={() => props.history.push('/search/' + query + '/artists')}
+          >
+            <Typography style={{ marginRight: 10 }}>See more</Typography>
+          </Button>
+        </div>
+        <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
+          {data.artists.items.map(artist => (
+            <MediaCard
+              rounded
+              key={artist.id}
+              link={'/artist/' + artist.id}
+              img={artist.images.length > 0 ? artist.images[0].url : null}
+              primaryText={artist.name}
+              secondaryText="Artist"
+              playSong={() =>
+                props.playSong(
+                  JSON.stringify({
+                    context_uri: artist.uri,
+                  })
+                )
               }
-            >
-              <ListItemIcon style={{ cursor: 'pointer' }}>
-                {props.currentlyPlaying === track.name && props.isPlaying ? (
-                  <PauseIcon onClick={props.pauseSong} />
-                ) : (
-                  <PlayArrowIcon
-                    onClick={() =>
-                      props.playSong(
-                        JSON.stringify({
-                          context_uri: track.album.uri,
-                          offset: {
-                            uri: track.uri,
-                          },
-                        })
-                      )
-                    }
-                  />
-                )}
-              </ListItemIcon>
-              <ListItemText primary={track.name} secondary={ArtistAlbumLink} />
-              <ListItemText
-                style={{ textAlign: 'right' }}
-                primary={milisToMinutesAndSeconds(track.duration_ms)}
-              />
-            </ListItem>
-          );
-        })}
-      </List>
+            />
+          ))}
+        </Grid>
+      </>
     ) : null;
 
   let Albums =
     data && data.albums ? (
-      <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
-        {data.albums.items.map(album => (
-          <MediaCard
-            key={album.id}
-            link={'/album/' + album.id}
-            img={album.images.length > 0 ? album.images[0].url : null}
-            primaryText={`${album.artists.map(a => a.name).join(', ')} - ${
-              album.name
-            }`}
-            playSong={() =>
-              props.playSong(
-                JSON.stringify({
-                  context_uri: album.uri,
-                })
-              )
-            }
-          />
-        ))}
-      </Grid>
+      <>
+        <div
+          style={{
+            display: 'flex',
+            flex: 1,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <TypographyHeader>Albums</TypographyHeader>
+          <Button
+            color="primary"
+            onClick={() => props.history.push('/search/' + query + '/albums')}
+          >
+            <Typography style={{ marginRight: 10 }}>See more</Typography>
+          </Button>
+        </div>
+        <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
+          {data.albums.items.map(album => (
+            <MediaCard
+              key={album.id}
+              link={'/album/' + album.id}
+              img={album.images.length > 0 ? album.images[0].url : null}
+              primaryText={album.name}
+              secondaryText={album.artists.map(a => a.name).join(', ')}
+              playSong={() =>
+                props.playSong(
+                  JSON.stringify({
+                    context_uri: album.uri,
+                  })
+                )
+              }
+            />
+          ))}
+        </Grid>
+      </>
     ) : null;
 
   let Playlists =
     data && data.playlists ? (
-      <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
-        {data.playlists.items.map(playlist => (
-          <MediaCard
-            key={playlist.id}
-            link={'/playlist/' + playlist.id}
-            img={playlist.images.length > 0 ? playlist.images[0].url : null}
-            primaryText={playlist.name}
-            playSong={() =>
-              props.playSong(
-                JSON.stringify({
-                  context_uri: playlist.uri,
-                })
-              )
+      <>
+        <div
+          style={{
+            display: 'flex',
+            flex: 1,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <TypographyHeader>Playlists</TypographyHeader>
+          <Button
+            color="primary"
+            onClick={() =>
+              props.history.push('/search/' + query + '/playlists')
             }
-          />
-        ))}
-      </Grid>
+          >
+            <Typography style={{ marginRight: 10 }}>See more</Typography>
+          </Button>
+        </div>
+
+        <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
+          {data.playlists.items.map(playlist => (
+            <MediaCard
+              key={playlist.id}
+              link={'/playlist/' + playlist.id}
+              img={playlist.images.length > 0 ? playlist.images[0].url : null}
+              primaryText={playlist.name}
+              secondaryText="Playlist"
+              playSong={() =>
+                props.playSong(
+                  JSON.stringify({
+                    context_uri: playlist.uri,
+                  })
+                )
+              }
+            />
+          ))}
+        </Grid>
+      </>
     ) : null;
 
   return (
@@ -353,26 +305,29 @@ function SearchResults(props) {
           <CircularProgress />
         </Grid>
       ) : (
-        <>
-          <Navigation items={NavigationItems} width="60%" />
-          <Switch>
-            <Route path="/search/results/:query" exact>
+        <Switch>
+          <Route path="/search/:query/results" exact>
+            <>
               {TopResults}
-            </Route>
-            <Route path="/search/artists/:query" exact>
               {Artists}
-            </Route>
-            <Route path="/search/tracks/:query" exact>
-              {Tracks}
-            </Route>
-            <Route path="/search/albums/:query" exact>
               {Albums}
-            </Route>
-            <Route path="/search/playlists/:query" exact>
               {Playlists}
-            </Route>
-          </Switch>
-        </>
+            </>
+          </Route>
+          <Route path="/search/:query/artists" exact>
+            <ArtistResults />
+          </Route>
+
+          <Route path="/search/:query/tracks" exact>
+            <TrackResults />
+          </Route>
+          <Route path="/search/:query/albums" exact>
+            <AlbumResults />
+          </Route>
+          <Route path="/search/:query/playlists" exact>
+            <PlaylistResults />
+          </Route>
+        </Switch>
       )}
     </Grid>
   );

@@ -16,8 +16,11 @@ import {
 } from '@material-ui/core';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
-import Infinite from 'react-infinite';
-import { TrackDetailsLink } from '../UI/TrackDetailsLink';
+import InfiniteList from 'react-virtualized/dist/commonjs/List';
+import InfiniteLoader from 'react-virtualized/dist/commonjs/InfiniteLoader';
+import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
+import WindowScroller from 'react-virtualized/dist/commonjs/WindowScroller';
+import { TrackDetailsLink } from '../UI';
 import { milisToMinutesAndSeconds } from '../../utils/index';
 
 class AlbumView extends Component {
@@ -158,85 +161,158 @@ class AlbumView extends Component {
                     </Grid>
                     <Grid item xs={12} md={8}>
                       <List style={{ width: '100%' }}>
-                        <Infinite
-                          useWindowAsScrollContainer
-                          elementHeight={72}
-                          infiniteLoadBeginEdgeOffset={150}
-                          onInfiniteLoad={() => {
-                            if (tracks.items.length < tracks.total) {
-                              loadMoreData();
-                            }
-                          }}
-                        >
-                          {tracks.items.map(track => {
-                            const ArtistAlbumLink = (
-                              <React.Fragment>
-                                {track.artists.map((artist, index) => (
-                                  <React.Fragment key={artist.id}>
-                                    <TrackDetailsLink
-                                      to={'/artist/' + artist.id}
-                                    >
-                                      {artist.name}
-                                    </TrackDetailsLink>
-                                    {index !== track.artists.length - 1
-                                      ? ', '
-                                      : null}
-                                  </React.Fragment>
-                                ))}
-                                <span> • </span>
-                                <TrackDetailsLink to={'/album/' + album.id}>
-                                  {album.name}
-                                </TrackDetailsLink>
-                              </React.Fragment>
-                            );
-                            return (
-                              <ListItem
-                                key={track.id}
-                                style={
-                                  this.props.currentlyPlaying === track.name &&
-                                  this.props.isPlaying
-                                    ? {
-                                        background: '#1db954',
-                                      }
-                                    : null
-                                }
-                              >
-                                <ListItemIcon
-                                  style={{
-                                    cursor: 'pointer',
-                                  }}
+                        <AutoSizer>
+                          {({ width }) => (
+                            <WindowScroller>
+                              {({
+                                height,
+                                isScrolling,
+                                onChildScroll,
+                                scrollTop,
+                              }) => (
+                                <InfiniteLoader
+                                  isRowLoaded={({ index }) =>
+                                    !tracks.next || index < tracks.items.length
+                                  }
+                                  loadMoreRows={() => loadMoreData()}
+                                  rowCount={
+                                    tracks.items.length === tracks.total
+                                      ? tracks.items.length
+                                      : tracks.items.length + 1
+                                  }
                                 >
-                                  {this.props.currentlyPlaying === track.name &&
-                                  this.props.isPlaying ? (
-                                    <PauseIcon onClick={this.props.pauseSong} />
-                                  ) : (
-                                    <PlayArrowIcon
-                                      onClick={() =>
-                                        this.playSongHandler(track, album)
+                                  {({ onRowsRendered, registerChild }) => (
+                                    <InfiniteList
+                                      style={{
+                                        outline: 'none',
+                                        paddingBottom: 100,
+                                      }}
+                                      ref={registerChild}
+                                      onRowsRendered={onRowsRendered}
+                                      autoHeight
+                                      height={height}
+                                      onScroll={onChildScroll}
+                                      isScrolling={isScrolling}
+                                      width={width}
+                                      scrollTop={scrollTop}
+                                      rowHeight={72}
+                                      rowCount={
+                                        tracks.items.length === tracks.total
+                                          ? tracks.items.length
+                                          : tracks.items.length + 1
                                       }
+                                      rowRenderer={({ index, key, style }) => {
+                                        let content = null;
+
+                                        if (
+                                          !(
+                                            !tracks.next ||
+                                            index < tracks.items.length
+                                          )
+                                        ) {
+                                          content = 'Loading...';
+                                        } else {
+                                          const track = tracks.items[index];
+
+                                          const ArtistAlbumLink = (
+                                            <React.Fragment>
+                                              {track.artists.map(
+                                                (artist, index) => (
+                                                  <React.Fragment
+                                                    key={artist.id}
+                                                  >
+                                                    <TrackDetailsLink
+                                                      to={
+                                                        '/artist/' + artist.id
+                                                      }
+                                                    >
+                                                      {artist.name}
+                                                    </TrackDetailsLink>
+                                                    {index !==
+                                                    track.artists.length - 1
+                                                      ? ', '
+                                                      : null}
+                                                  </React.Fragment>
+                                                )
+                                              )}
+                                              <span> • </span>
+                                              <TrackDetailsLink
+                                                to={'/album/' + album.id}
+                                              >
+                                                {album.name}
+                                              </TrackDetailsLink>
+                                            </React.Fragment>
+                                          );
+                                          content = (
+                                            <ListItem
+                                              key={track.id}
+                                              style={
+                                                this.props.currentlyPlaying ===
+                                                  track.name &&
+                                                this.props.isPlaying
+                                                  ? {
+                                                      background: '#1db954',
+                                                    }
+                                                  : null
+                                              }
+                                            >
+                                              <ListItemIcon
+                                                style={{
+                                                  cursor: 'pointer',
+                                                }}
+                                              >
+                                                {this.props.currentlyPlaying ===
+                                                  track.name &&
+                                                this.props.isPlaying ? (
+                                                  <PauseIcon
+                                                    onClick={
+                                                      this.props.pauseSong
+                                                    }
+                                                  />
+                                                ) : (
+                                                  <PlayArrowIcon
+                                                    onClick={() =>
+                                                      this.playSongHandler(
+                                                        track,
+                                                        album
+                                                      )
+                                                    }
+                                                  />
+                                                )}
+                                              </ListItemIcon>
+                                              <ListItemText
+                                                primary={track.name}
+                                                secondary={ArtistAlbumLink}
+                                                primaryTypographyProps={{
+                                                  style: { fontWeight: 'bold' },
+                                                }}
+                                                style={{ fontWeight: 'bold' }}
+                                              />
+                                              <ListItemText
+                                                style={{
+                                                  textAlign: 'right',
+                                                }}
+                                                primary={milisToMinutesAndSeconds(
+                                                  track.duration_ms
+                                                )}
+                                              />
+                                            </ListItem>
+                                          );
+                                        }
+
+                                        return (
+                                          <div key={key} style={style}>
+                                            {content}
+                                          </div>
+                                        );
+                                      }}
                                     />
                                   )}
-                                </ListItemIcon>
-                                <ListItemText
-                                  primary={track.name}
-                                  secondary={ArtistAlbumLink}
-                                  primaryTypographyProps={{
-                                    style: { fontWeight: 'bold' },
-                                  }}
-                                  style={{ fontWeight: 'bold' }}
-                                />
-                                <ListItemText
-                                  style={{
-                                    textAlign: 'right',
-                                  }}
-                                  primary={milisToMinutesAndSeconds(
-                                    track.duration_ms
-                                  )}
-                                />
-                              </ListItem>
-                            );
-                          })}
-                        </Infinite>
+                                </InfiniteLoader>
+                              )}
+                            </WindowScroller>
+                          )}
+                        </AutoSizer>
                       </List>
                     </Grid>
                   </Grid>

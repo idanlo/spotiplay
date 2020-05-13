@@ -14,9 +14,10 @@ import {
   Paper,
   Divider,
   ListItemAvatar,
+  SvgIcon,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import SpotifyIcon from '../../icons/spotify.svg';
+import { ReactComponent as SpotifyIcon } from '../../icons/spotify.svg';
 import GithubIcon from '../../icons/github.svg';
 import HomeIcon from '@material-ui/icons/Home';
 import SearchIcon from '@material-ui/icons/Search';
@@ -76,7 +77,7 @@ const Sidedrawer = props => {
         </ListItemIcon>
         <ListItemText>Search</ListItemText>
       </ListItem>
-      <ListItem button component={Link} to="/browse/featured">
+      <ListItem button component={Link} to="/">
         <ListItemIcon>
           <HomeIcon />
         </ListItemIcon>
@@ -94,6 +95,52 @@ const Sidedrawer = props => {
         <Typography variant="caption">Recently Played</Typography>
       </ListItem>
       {recently_played}
+      <Divider />
+      <div
+        style={{
+          // position: 'absolute',
+          // top: '73%',
+          // left: 0,
+          // alignSelf: 'flex-end',
+          // paddingBottom: 100,
+          width: '100%',
+        }}
+      >
+        <a
+          href="https://www.spotify.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ textDecoration: 'none' }}
+        >
+          <ListItem button>
+            <ListItemAvatar>
+              <SvgIcon style={{ width: 25, height: 25 }}>
+                <SpotifyIcon fill="#1ED760" />
+              </SvgIcon>
+            </ListItemAvatar>
+            <ListItemText secondary="Spotify.com" />
+          </ListItem>
+        </a>
+        <a
+          href="https://www.github.com/idanlo/react-spotify"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ textDecoration: 'none' }}
+        >
+          <ListItem button>
+            <ListItemAvatar>
+              <Avatar
+                src={GithubIcon}
+                style={{
+                  width: 25,
+                  height: 25,
+                }}
+              />
+            </ListItemAvatar>
+            <ListItemText secondary="Github Repo" />
+          </ListItem>
+        </a>
+      </div>
     </List>
   );
 
@@ -128,47 +175,6 @@ const Sidedrawer = props => {
         }}
       >
         {mainList}
-        <div
-          style={{
-            position: 'absolute',
-            top: '73%',
-            left: 0,
-            width: '100%',
-          }}
-        >
-          <a
-            href="https://www.spotify.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ textDecoration: 'none' }}
-          >
-            <ListItem button>
-              <ListItemAvatar>
-                <Avatar src={SpotifyIcon} style={{ width: 25, height: 25 }} />
-              </ListItemAvatar>
-              <ListItemText secondary="Spotify.com" />
-            </ListItem>
-          </a>
-          <a
-            href="https://www.github.com/idanlo/react-spotify"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ textDecoration: 'none' }}
-          >
-            <ListItem button>
-              <ListItemAvatar>
-                <Avatar
-                  src={GithubIcon}
-                  style={{
-                    width: 25,
-                    height: 25,
-                  }}
-                />
-              </ListItemAvatar>
-              <ListItemText secondary="Github Repo" />
-            </ListItem>
-          </a>
-        </div>
       </Paper>
     );
   }

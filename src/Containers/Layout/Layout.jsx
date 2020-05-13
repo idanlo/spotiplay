@@ -173,7 +173,7 @@ class Layout extends Component {
             url: 'https://api.spotify.com/v1/me/player/recently-played',
             method: 'GET',
             params: {
-              limit: 12,
+              limit: 20,
             },
           }).then(res => {
             logger.log(res);
@@ -191,12 +191,12 @@ class Layout extends Component {
   logInUserAndGetInfo = newUser => {
     logger.log('LOG IN', newUser);
     this.props.setUser(newUser); // set user in redux state
-    if (this.props.location.pathname === '/') {
-      this.props.history.push('/browse/featured'); // if there is no page the user wants to go to
-      // then go to the home page
-    } else {
+    if (this.props.location.pathname !== '/') {
       // if there is a page the user wants to go to then just send them there
       this.props.history.push();
+      // this.props.history.push('/browse/featured'); // if there is no page the user wants to go to
+      // // then go to the home page
+    } else {
     }
   };
 
@@ -258,10 +258,11 @@ class Layout extends Component {
               }}
             >
               <Switch>
-                <Route path="/browse/:item" exact component={HomePage} />
+                <Route path="/" exact component={HomePage} />
+
                 <Route path="/search" exact component={Search} />
 
-                <Route path="/search/:item/:query" exact component={Search} />
+                <Route path="/search/:query/:item" exact component={Search} />
 
                 <Route path="/playlist/:id" exact component={PlaylistView} />
 

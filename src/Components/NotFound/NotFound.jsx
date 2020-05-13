@@ -1,18 +1,23 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Grid, Typography, Divider } from '@material-ui/core';
+import { Box, Typography, Divider } from '@material-ui/core';
 
 const NotFound = () => (
-    <Grid container direction="column" alignItems="center">
-        <Typography color="secondary" variant="h1">
-            404 Not Found
-        </Typography>
-        <Divider />
-        <Typography color="secondary" variant="h3">
-            Click <Link to="/browse/featured">here</Link> to go to the home
-            page.
-        </Typography>
-    </Grid>
+  <Box
+    display="flex"
+    flexDirection="column"
+    alignItems="center"
+    justifyContent="center"
+    flex={1}
+  >
+    <Typography color="secondary" variant="h1" style={{ fontWeight: '800' }}>
+      404 Not Found
+    </Typography>
+    <Divider />
+    <Typography color="secondary" variant="h3" style={{ fontWeight: '700' }}>
+      Click <Link to="/">here</Link> to go to the home page.
+    </Typography>
+  </Box>
 );
 
 export default NotFound;

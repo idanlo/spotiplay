@@ -1,25 +1,13 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { Switch, Route } from 'react-router-dom';
 import axios from 'axios';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import MediaCard from '../MediaCard/MediaCard';
 import { BrowseFeatured, BrowseCategories, BrowseNew } from 'react-spotify-api';
 import * as actionTypes from '../../store/actions/actionTypes';
-import Navigation from '../Navigation/Navigation';
-import styled from 'styled-components';
+import TypographyHeader from '../UI/TypographyHeader';
 
-const TypographyHeader = styled(Typography).attrs({
-  variant: 'h3',
-  align: 'center',
-  color: 'secondary',
-})`
-  padding: 10px;
-  font-weight: 800;
-  font-size: 72px;
-`;
-
-class HomePage extends Component {
+class HomePage extends React.Component {
   state = {
     forYou: [],
   };
@@ -57,6 +45,7 @@ class HomePage extends Component {
               ? seed_artists.join(',')
               : undefined,
             seed_tracks: seed_tracks.length ? seed_tracks.join(',') : undefined,
+            limit: 20,
           },
         })
         .then(data => {
@@ -66,25 +55,6 @@ class HomePage extends Component {
   }
 
   render() {
-    const NavigationItems = [
-      {
-        link: '/browse/featured',
-        text: 'Featured',
-      },
-      {
-        link: '/browse/genres',
-        text: 'Genres & Moods',
-      },
-      {
-        link: '/browse/new',
-        text: 'New Releases',
-      },
-      {
-        link: '/browse/discover',
-        text: 'Discover',
-      },
-    ];
-
     let recentlyPlayed = (
       <div>
         <TypographyHeader>Recently Played</TypographyHeader>
@@ -158,7 +128,7 @@ class HomePage extends Component {
     }
 
     let featuredPlaylists = (
-      <BrowseFeatured options={{ limit: 12 }}>
+      <BrowseFeatured options={{ limit: 20 }}>
         {({ data: playlists }) =>
           playlists ? (
             <div>
@@ -197,7 +167,7 @@ class HomePage extends Component {
       <div>
         <TypographyHeader>Genres & Moods</TypographyHeader>
         <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
-          <BrowseCategories options={{ limit: 18 }}>
+          <BrowseCategories options={{ limit: 20 }}>
             {({ data: categories }) =>
               categories
                 ? categories.categories.items.map(genre => (
@@ -220,7 +190,7 @@ class HomePage extends Component {
       <div>
         <TypographyHeader>New Releases</TypographyHeader>
         <Grid container spacing={2} style={{ margin: 0, width: '100%' }}>
-          <BrowseNew options={{ limit: 18 }}>
+          <BrowseNew options={{ limit: 20 }}>
             {({ data: albums }) =>
               albums
                 ? albums.albums.items.map(album => (
@@ -248,23 +218,11 @@ class HomePage extends Component {
 
     return (
       <Grid container>
-        <Navigation items={NavigationItems} />
-        <Switch>
-          <Route
-            path="/browse/featured"
-            exact
-            render={() => (
-              <div>
-                {recentlyPlayed}
-                {forYou}
-                {featuredPlaylists}
-              </div>
-            )}
-          />
-          <Route path="/browse/genres" exact render={() => genres} />
-          <Route path="/browse/new" exact render={() => newReleases} />
-          <Route path="/browse/discover" exact render={() => recentlyPlayed} />
-        </Switch>
+        {recentlyPlayed}
+        {forYou}
+        {featuredPlaylists}
+        {genres}
+        {newReleases}
       </Grid>
     );
   }

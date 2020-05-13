@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Grid, CardContent, Typography, Fade } from '@material-ui/core';
 // import PlayArrowIcon from '@material-ui/icons/PlayCircleFilled';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import { ReactComponent as NoProfile } from './NoProfile.svg';
 
 const PlayBtnContainer = styled.div`
   position: absolute;
@@ -84,7 +85,7 @@ const MediaCard = props => {
 
   return (
     <Fade in>
-      <Grid item md={1} sm={6} xs={12}>
+      <Grid item md={2} sm={6} xs={12}>
         <div
           style={{
             backgroundColor: '#242424',
@@ -97,7 +98,11 @@ const MediaCard = props => {
         >
           <Link to={props.link} style={{ textDecoration: 'none' }}>
             <React.Fragment>
-              <CardMedia rounded={props.rounded} img={props.img} />
+              {props.img ? (
+                <CardMedia rounded={props.rounded} img={props.img} />
+              ) : (
+                <NoProfile color="#fff" width="100%" height="auto" />
+              )}
 
               <CardContent>
                 <Content

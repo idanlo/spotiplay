@@ -16,7 +16,7 @@ import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 // import Slider from '@material-ui/lab/Slider';
-import { TrackDetailsLink } from '../UI/TrackDetailsLink';
+import { TrackDetailsLink } from '../UI';
 import { logger } from '../../utils';
 
 class MusicPlayer extends Component {

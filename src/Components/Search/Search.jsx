@@ -30,7 +30,7 @@ class Search extends Component {
   formSubmittedHandler = e => {
     e.preventDefault();
     const { query } = this.state;
-    this.props.history.push('/search/results/' + query);
+    this.props.history.push('/search/' + query + '/results');
   };
 
   render() {
