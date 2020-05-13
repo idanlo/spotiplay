@@ -16,8 +16,8 @@ import {
   ListItemAvatar,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import SpotifyIcon from './spotify.svg';
-import GithubIcon from './github.svg';
+import SpotifyIcon from '../../icons/spotify.svg';
+import GithubIcon from '../../icons/github.svg';
 import HomeIcon from '@material-ui/icons/Home';
 import SearchIcon from '@material-ui/icons/Search';
 import LibraryMusicIcon from '@material-ui/icons/LibraryMusic';
