@@ -1,15 +1,15 @@
 # A Spotify client made with Rect
 
-## [Demo](https://react-spotify.netlify.com)
+## [Demo](https://spotiplay.netlify.app)
 
-# New Releases
+# Home
 
-![NewReleases](https://raw.githubusercontent.com/idanlo/react-spotify/master/images/new_releases.png)
+![Home](https://raw.githubusercontent.com/idanlo/spotiplay/master/images/home.png)
 
 # Album
 
-![AlbumView](https://raw.githubusercontent.com/idanlo/react-spotify/master/images/album_view.png)
+![AlbumView](https://raw.githubusercontent.com/idanlo/spotiplay/master/images/album_view.png)
 
 # Search
 
-![Search](https://raw.githubusercontent.com/idanlo/react-spotify/master/images/search.png)
+![Search](https://raw.githubusercontent.com/idanlo/spotiplay/master/images/search.png)
