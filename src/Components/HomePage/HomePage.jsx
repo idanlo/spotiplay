@@ -18,37 +18,24 @@ class HomePage extends React.Component {
     );
     document.title = 'Spotiplay | Home';
 
-    const seed_artists = [];
     const seed_tracks = [];
-    for (const item of this.props.recently_played) {
-      if (item.context && item.context.type === 'artist') {
-        // limited to 5 seed artists
-        if (seed_artists.length >= 5) {
-          continue;
-        }
-        seed_artists.push(item.context.uri.slice(15)); // The ID starts at position 15 of the URI string
-      } else {
-        // limited to 5 seed tracks
-        if (seed_tracks.length >= 5) {
-          continue;
-        }
-        seed_tracks.push(item.track.id);
-      }
+    for (const item of this.props.recently_played.slice(0, 5)) {
+      seed_tracks.push(item.track.id);
     }
 
-    // if there are no seeds this will error, so make a check if there are seeds (length of at least 1 array is more than 0)
-    if (seed_artists.length || seed_tracks.length) {
+    // if there are no seeds this will error, so make a check if there are seeds (length of array is more than 0)
+    if (seed_tracks.length) {
+      // there is also a possibility to add seed_artists but I found that to be unstable and sometimes threw 400 status codes,
+      // so I just used tracks as seeds for recommendations
       axios
         .get('https://api.spotify.com/v1/recommendations', {
           params: {
-            seed_artists: seed_artists.length
-              ? seed_artists.join(',')
-              : undefined,
-            seed_tracks: seed_tracks.length ? seed_tracks.join(',') : undefined,
+            seed_tracks: seed_tracks.join(','),
             limit: 20,
           },
         })
         .then(data => {
+          console.dir(data);
           this.setState({ forYou: data.data.tracks });
         });
     }
