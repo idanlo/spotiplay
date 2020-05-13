@@ -15,7 +15,6 @@ import SkipNextIcon from '@material-ui/icons/SkipNext';
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-// import Slider from '@material-ui/lab/Slider';
 import { TrackDetailsLink } from '../UI';
 import { logger } from '../../utils';
 
@@ -349,18 +348,17 @@ class MusicPlayer extends Component {
                   <SkipNextIcon />
                 </IconButton>
               </div>
-              <Grid container>
+              <Grid container style={{ alignItems: 'center' }}>
                 <Grid
                   item
                   xs={2}
                   style={{
                     textAlign: 'center',
-                    marginTop: 5,
                   }}
                 >
                   <Typography>{this.state.positionStamp}</Typography>
                 </Grid>
-                <Grid item xs={8}>
+                <Grid item xs={8} style={{ display: 'flex' }}>
                   <Slider
                     value={this.state.positionSliderValue}
                     onChange={this.onSeekSliderChange}
@@ -371,7 +369,6 @@ class MusicPlayer extends Component {
                   xs={2}
                   style={{
                     textAlign: 'center',
-                    marginTop: 5,
                   }}
                 >
                   <Typography>{this.state.durationStamp}</Typography>
@@ -379,7 +376,7 @@ class MusicPlayer extends Component {
               </Grid>
             </Grid>
             <Grid item xs={3}>
-              <div style={{ marginTop: 53 }}>
+              <div style={{ marginTop: 50, width: '95%' }}>
                 <Slider
                   value={this.state.volumeSliderValue}
                   onChange={this.onVolumeSliderChange}
