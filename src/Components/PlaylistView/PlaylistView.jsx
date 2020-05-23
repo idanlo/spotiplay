@@ -38,7 +38,7 @@ class PlaylistView extends Component {
       let uris;
       if (track.type === 'playlist') {
         uris = JSON.stringify({
-          context_uri: playlist.uri,
+          context_uri: track.uri,
         });
       } else {
         uris = JSON.stringify({
