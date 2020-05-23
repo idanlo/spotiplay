@@ -10,13 +10,23 @@ export const SET_BACKGROUND_IMAGE = 'SET_BACKGROUND_IMAGE';
 export const PLAY_SONG_START = 'PLAY_SONG_START';
 export const PLAY_SONG_SUCCESS = 'PLAY_SONG_SUCCESS';
 export const PLAY_SONG_FAIL = 'PLAY_SONG_FAIL';
+export const SET_PLAYER_ID = 'SET_PLAYER_ID';
+
+export const setPlayerId = data => {
+  return {
+    type: SET_PLAYER_ID,
+    player_id: data,
+  };
+};
 
 export const playSong = (uris, deviceId) => {
   return (dispatch, getState) => {
     if (getState().current_user) {
       dispatch(playSongStart());
       axios({
-        url: `https://api.spotify.com/v1/me/player/play`,
+        url: `https://api.spotify.com/v1/me/player/play?device_id=${
+          getState().player_id
+        }`,
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${getState().current_user.access_token}`,

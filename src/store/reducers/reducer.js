@@ -3,13 +3,14 @@ import * as actionTypes from '../actions/actionTypes';
 const initialState = {
   current_user: null,
   recently_played: null,
+  player_id: '',
   play_now: {
     type: null,
-    uri: null
+    uri: null,
   },
   currently_playing: null,
   isPlaying: false,
-  backgroundImage: 'linear-gradient(rgb(58, 91, 95), rgb(6, 9, 10) 85%)'
+  backgroundImage: 'linear-gradient(rgb(58, 91, 95), rgb(6, 9, 10) 85%)',
 };
 
 const reducer = (state = initialState, action) => {
@@ -20,49 +21,54 @@ const reducer = (state = initialState, action) => {
         isLoggedIn: true,
         current_user: {
           ...state.current_user,
-          ...action.user
-        }
+          ...action.user,
+        },
+      };
+    case actionTypes.SET_PLAYER_ID:
+      return {
+        ...state,
+        player_id: action.player_id,
       };
     case actionTypes.SET_RECENTLY_PLAYED:
       return {
         ...state,
-        recently_played: action.recently_played
+        recently_played: action.recently_played,
       };
     case actionTypes.SET_PLAY_NOW:
       return {
         ...state,
         play_now: {
           type: action.uri_type,
-          uri: action.uri
-        }
+          uri: action.uri,
+        },
       };
     case actionTypes.RESET_PLAY_NOW:
       return {
         ...state,
         play_now: {
           type: null,
-          uri: null
-        }
+          uri: null,
+        },
       };
     case actionTypes.SET_CURRENTLY_PLAYING:
       return {
         ...state,
-        currently_playing: action.song
+        currently_playing: action.song,
       };
     case actionTypes.SET_IS_PLAYING:
       return {
         ...state,
-        isPlaying: action.isPlaying
+        isPlaying: action.isPlaying,
       };
     case actionTypes.SET_BACKGROUND_IMAGE:
       return {
         ...state,
-        backgroundImage: action.backgroundImage
+        backgroundImage: action.backgroundImage,
       };
     case actionTypes.PLAY_SONG_START:
       return {
         ...state,
-        play_now: null
+        play_now: null,
       };
     default:
       return state;

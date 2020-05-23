@@ -50,14 +50,12 @@ class MusicPlayer extends Component {
   // }
 
   checkForPlayer = () => {
-    const token = this.props.user.access_token;
-
     if (window.Spotify) {
       clearInterval(this.playerCheckInterval);
       this.player = new window.Spotify.Player({
         name: "Idanlo's Spotify App",
         getOAuthToken: cb => {
-          cb(token);
+          cb(this.props.user.access_token);
         },
       });
     }
@@ -74,9 +72,16 @@ class MusicPlayer extends Component {
       console.error('Initialization error ', e);
       this.setState({ player_init_error: true });
     });
-    this.player.on('authentication_error', e =>
-      console.error('Authentication error ', e)
-    );
+    this.player.on('authentication_error', e => {
+      console.error('Authentication error ', e);
+      // Pass an invalid access token so that the axios interceptor will fetch
+      // a new access token and the player would work again
+      axios.get('https://api.spotify.com/v1/me', {
+        headers: {
+          Authorization: `Bearer xx`,
+        },
+      });
+    });
     this.player.on('account_error', e => console.error('Account error ', e));
     this.player.on('playback_error', e => console.error('Playback error ', e));
 
@@ -122,6 +127,7 @@ class MusicPlayer extends Component {
     this.player.on('ready', data => {
       let { device_id } = data;
       logger.log('PLAYER CONNECTED ', device_id);
+      this.props.setPlayerId(device_id);
       // await this.setState({ deviceId: device_id });
       this.setState({ deviceId: device_id }, () => {
         this.transferPlaybackHere();
@@ -411,6 +417,7 @@ const mapDispatchToProps = dispatch => {
       dispatch({ type: actionTypes.SET_CURRENTLY_PLAYING, song }),
     setIsPlaying: isPlaying =>
       dispatch({ type: actionTypes.SET_IS_PLAYING, isPlaying }),
+    setPlayerId: playerId => dispatch(actionTypes.setPlayerId(playerId)),
   };
 };
 
