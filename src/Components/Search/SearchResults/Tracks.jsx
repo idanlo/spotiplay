@@ -38,7 +38,6 @@ const Tracks = () => {
         },
       })
       .then(res => {
-        console.log('res', res);
         setTracks(res.data.tracks);
       });
   }, []);
@@ -70,7 +69,6 @@ const Tracks = () => {
             height: 50,
           }}
         >
-          {console.log(tracks)}
           {tracks && tracks.items && tracks.items.length ? (
             <AutoSizer>
               {({ width }) => (
