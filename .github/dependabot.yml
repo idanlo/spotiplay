@@ -1,0 +1,29 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: styled-components
+    versions:
+    - 5.2.1
+    - 5.2.2
+  - dependency-name: react-redux
+    versions:
+    - 7.2.2
+    - 7.2.3
+  - dependency-name: react-scripts
+    versions:
+    - 4.0.1
+    - 4.0.2
+  - dependency-name: "@material-ui/core"
+    versions:
+    - 4.11.3
+  - dependency-name: "@material-ui/lab"
+    versions:
+    - 4.0.0-alpha.57
+  - dependency-name: elliptic
+    versions:
+    - 6.5.3
